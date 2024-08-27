@@ -18,7 +18,7 @@ object RetrofitClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    fun getTikTokService() = retrofit.create(TikTokService::class.java)
+    fun getXService() = retrofit.create(XService::class.java)
     fun getInstagramService() = retrofit.create(InstagramService::class.java)
     fun getFacebookService() = retrofit.create(FacebookService::class.java)
 
