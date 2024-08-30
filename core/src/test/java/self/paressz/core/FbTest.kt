@@ -1,8 +1,5 @@
 package self.paressz.core
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
@@ -11,6 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import self.paressz.core.model.FbResponse
+import self.paressz.core.network.FacebookService
 
 class FbTest {
     @Test

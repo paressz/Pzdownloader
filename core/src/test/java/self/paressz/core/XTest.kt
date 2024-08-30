@@ -3,15 +3,15 @@ package self.paressz.core
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
-import org.mockito.Mock
 import org.mockito.Mockito
 import retrofit2.Call
 import retrofit2.Callback
 import self.paressz.core.model.XResponse
 import self.paressz.core.model.XResponseAlter
+import self.paressz.core.network.XService
 
 class XTest {
-    val url = "https://x.com/elonmusk/status/1827970423788535925"
+    val url = "https://x.com/Paressz/status/1829197614912508167"
     @Test
     fun downloadXVideo() {
         val mockResponse = XResponse(

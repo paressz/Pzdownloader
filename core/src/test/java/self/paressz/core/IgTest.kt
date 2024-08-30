@@ -8,6 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import self.paressz.core.model.IgResponse
+import self.paressz.core.network.InstagramService
 
 class IgTest {
     @Test

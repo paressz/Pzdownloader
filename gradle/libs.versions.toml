@@ -1,6 +1,6 @@
 [versions]
 agp = "8.5.2"
-kotlin = "2.0.20"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -13,6 +13,10 @@ retrofit = "2.11.0"
 okHttp3 = "4.12.0"
 mockito = "5.12.0"
 mockitoKotlin = "4.1.0"
+hilt = "2.51.1"
+glide = "4.16.0"
+kotlinxCoroutine= "1.9.0-RC.2"
+lifecycle = "2.8.4"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -27,7 +31,14 @@ gsonConverter = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 loggingInterceptor = {group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp3"}
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+hilt-android = {group = "com.google.dagger", name ="hilt-android", version.ref = "hilt"}
+hilt-compiler = {group = "com.google.dagger", name ="hilt-android-compiler", version.ref = "hilt"}
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+kotlinx-coroutine = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref="kotlinxCoroutine"}
+viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle"}
+livedata = {group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle"}
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
 

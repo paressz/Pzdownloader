@@ -1,4 +1,4 @@
-package self.paressz.core
+package self.paressz.core.network
 
 import retrofit2.Call
 import retrofit2.http.GET
@@ -6,7 +6,7 @@ import retrofit2.http.Query
 import self.paressz.core.model.IgResponse
 
 interface InstagramService {
-    @GET("/downloader/igdl")
+    @GET("downloader/igdl")
     fun donwloadInstagramVideo(
         @Query("url") url : String
     ) : Call<IgResponse>

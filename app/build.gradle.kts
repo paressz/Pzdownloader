@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.hilt)
+    id("kotlin-kapt")
 }
 
 android {
@@ -8,7 +10,6 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "self.paressz.pzdownloader"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
@@ -33,17 +34,35 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(project(":core"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    //LIFECYCLE
+    implementation(libs.viewmodel)
+    implementation(libs.livedata)
+
+    //KOTLINX
+    implementation(libs.kotlinx.coroutine)
+
+    //Glide
+    implementation(libs.glide)
+    //HILT
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+}
+kapt {
+    correctErrorTypes = true
 }
