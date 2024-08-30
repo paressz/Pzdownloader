@@ -17,12 +17,13 @@ class XDownloadViewModel
 @Inject constructor(
     private val downloadRepository: DownloadRepository
 ) : ViewModel() {
-    fun downloadX(url: String) : LiveData<LoadState<XResponse.MediaItem>> {
-        lateinit var data : LiveData<LoadState<XResponse.MediaItem>>
+    fun downloadX(url: String) : LiveData<LoadState<XResponse>> {
+        lateinit var data : LiveData<LoadState<XResponse>>
         viewModelScope.launch {
             data = downloadRepository.downloadXVideo(url)
         }
         return data
     }
+
     suspend fun downloadVideo(url : String) : InputStream = downloadRepository.downloadVideo(url)
 }

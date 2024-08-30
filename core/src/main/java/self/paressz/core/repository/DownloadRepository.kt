@@ -24,15 +24,15 @@ class DownloadRepository
     private val facebookService: FacebookService,
     private val cdnService: CdnService
 )  {
-    val xState = MutableLiveData<LoadState<XResponse.MediaItem>>()
-    fun downloadXVideo(url: String) : LiveData<LoadState<XResponse.MediaItem>> {
+    val xState = MutableLiveData<LoadState<XResponse>>()
+    fun downloadXVideo(url: String) : LiveData<LoadState<XResponse>> {
         xService.downloadXVideo(url).enqueue(object : Callback<XResponse> {
             override fun onResponse(call: Call<XResponse>, response: Response<XResponse>) {
                 xState.value = LoadState.Loading
                 if (response.isSuccessful) {
-                    xState.value = LoadState.Success(response.body()?.media as XResponse.MediaItem)
+                    xState.value = LoadState.Success(response.body() as XResponse)
                 } else {
-                    xState.value = LoadState.Error(response.body().toString())
+                    xState.value = LoadState.Error(response.raw().toString())
                 }
             }
 

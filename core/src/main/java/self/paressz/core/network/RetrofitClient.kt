@@ -16,7 +16,7 @@ object RetrofitClient {
         else HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-//        .cookieJar(MyCookieJar())
+        .cookieJar(MyCookieJar())
         .build()
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -29,14 +29,14 @@ object RetrofitClient {
     fun getFacebookService() = retrofit.create(FacebookService::class.java)
     fun getCdnService() = retrofit.create(CdnService::class.java)
 }
-//class MyCookieJar : CookieJar {
-//    private val cookieStore: MutableMap<HttpUrl, MutableList<Cookie>> = HashMap()
-//
-//    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-//        cookieStore[url] = cookies.toMutableList()
-//    }
-//
-//    override fun loadForRequest(url: HttpUrl): List<Cookie> {
-//        return cookieStore[url] ?: emptyList()
-//    }
-//}
+class MyCookieJar : CookieJar {
+    private val cookieStore: MutableMap<HttpUrl, MutableList<Cookie>> = HashMap()
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        cookieStore[url] = cookies.toMutableList()
+    }
+
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        return cookieStore[url] ?: emptyList()
+    }
+}

@@ -29,8 +29,8 @@ class XDownloadActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val url = binding.downloadUrl.text.toString()
         binding.btnDownload.setOnClickListener {
+            val url = binding.downloadUrl.text.toString()
             downloadVideo(url)
 //            lifecycleScope.launch {
 //                val x = viewModel.downloadVideo("https://dl.snapcdn.app/get?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3ZpZGVvLnR3aW1nLmNvbS9leHRfdHdfdmlkZW8vMTgyOTE5NzUzMjUxOTY0MTA5MC9wdS92aWQvYXZjMS80ODB4ODAwLzVBTDR0UFV6SVEtell4OUcubXA0P3RhZz0xMiIsImZpbGVuYW1lIjoiU2F2ZVR3aXR0ZXIuTmV0XzVBTDR0UFV6SVEtell4OUdfKDgwMHApLm1wNCIsIm5iZiI6MTcyNTAwMTM5MiwiZXhwIjoxNzI1MDA0OTkyLCJpYXQiOjE3MjUwMDEzOTJ9.drxXpC0DlRB8Ht9g0hm85i6x1DGWefhHPUeYW96Jgrk")
@@ -46,8 +46,10 @@ class XDownloadActivity : AppCompatActivity() {
 
                 }
                 is LoadState.Success -> {
-                    //val inputStream = viewModel.downloadVideo(state.data.url)
-                    //Log.d("ASGFHJ", "downloadVideo: ${inputStream.readBytes()}")
+                    lifecycleScope.launch {
+                        val inputStream = viewModel.downloadVideo(state.data.media[0].url)
+                        Log.d("ASGFHJ", "downloadVideo: ${inputStream.readBytes()}")
+                    }
                 }
                 is LoadState.Error -> {
                     Log.d("LOAD ERROR", "downloadVideo: ${state.message}")

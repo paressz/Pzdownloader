@@ -8,11 +8,12 @@ import self.paressz.core.model.XResponse
 import self.paressz.core.model.XResponseAlter
 
 interface XService {
-    @Headers("accept: application/json")
+    @Headers("Accept: application/json")
     @GET("downloader/twitter")
     fun downloadXVideo(
         @Query("url") url : String
     ) : Call<XResponse>
+
     @GET("downloader/twitter2")
     fun downloadXVideoAlter(
         @Query("url") url : String
