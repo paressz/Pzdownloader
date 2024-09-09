@@ -41,12 +41,12 @@ kapt {
 }
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(androidx.core.ktx)
+    implementation(androidx.appcompat)
+    implementation(androidx.material)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(androidx.junit)
+    androidTestImplementation(androidx.espresso.core)
 
     //mockito
     testImplementation(libs.mockito.core)

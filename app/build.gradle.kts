@@ -40,28 +40,32 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
+    implementation(androidx.core.ktx)
+    implementation(androidx.appcompat)
+    implementation(androidx.material)
+    implementation(androidx.activity)
+    implementation(androidx.constraintlayout)
     implementation(project(":core"))
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(androidx.junit)
+    androidTestImplementation(androidx.espresso.core)
 
     //LIFECYCLE
-    implementation(libs.viewmodel)
-    implementation(libs.livedata)
+    implementation(androidx.viewmodel)
+    implementation(androidx.livedata)
 
     //KOTLINX
-    implementation(libs.kotlinx.coroutine)
+    implementation(kotlinx.kotlinx.coroutine)
 
     //Glide
     implementation(libs.glide)
+
     //HILT
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    //Ketch
+    implementation(libs.ketch)
 }
 kapt {
     correctErrorTypes = true

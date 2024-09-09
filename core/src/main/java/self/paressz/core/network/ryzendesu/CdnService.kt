@@ -1,4 +1,4 @@
-package self.paressz.core.network
+package self.paressz.core.network.ryzendesu
 
 import okhttp3.ResponseBody
 import retrofit2.http.GET

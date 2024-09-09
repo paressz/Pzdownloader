@@ -16,6 +16,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+    versionCatalogs {
+        create("kotlinx") {
+            from(files("gradle/kotlinx.versions.toml"))
+        }
+        create("androidx") {
+            from(files("gradle/androidx.versions.toml"))
+        }
     }
 }
 

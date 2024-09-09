@@ -3,12 +3,11 @@ package self.paressz.pzdownloader.ui.x
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import self.paressz.core.model.XResponse
 import self.paressz.core.repository.DownloadRepository
-import self.paressz.core.util.LoadState
+import self.paressz.core.repository.LoadState
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -25,5 +24,5 @@ class XDownloadViewModel
         return data
     }
 
-    suspend fun downloadVideo(url : String) : InputStream = downloadRepository.downloadVideo(url)
+    suspend fun downloadVideo(url : String) : InputStream = downloadRepository.cdnDownloadVideo(url)
 }

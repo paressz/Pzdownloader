@@ -10,7 +10,6 @@ class PzDownloaderApplication : Application() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate() {
         super.onCreate()
-        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
 }

@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import self.paressz.core.model.XResponse
 import self.paressz.core.model.XResponseAlter
-import self.paressz.core.network.XService
+import self.paressz.core.network.ryzendesu.XService
 
 class XTest {
     val url = "https://x.com/Paressz/status/1829197614912508167"

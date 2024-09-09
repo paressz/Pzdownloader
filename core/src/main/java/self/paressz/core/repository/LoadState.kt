@@ -1,4 +1,4 @@
-package self.paressz.core.util
+package self.paressz.core.repository
 
 sealed class LoadState<out R> private constructor() {
     object Loading : LoadState<Nothing>()

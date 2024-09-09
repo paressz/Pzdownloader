@@ -1,4 +1,4 @@
-package self.paressz.core.network
+package self.paressz.core.network.ryzendesu
 
 import retrofit2.Call
 import retrofit2.http.GET
