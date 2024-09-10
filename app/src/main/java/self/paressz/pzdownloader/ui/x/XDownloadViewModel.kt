@@ -13,9 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class XDownloadViewModel
-@Inject constructor(
-    private val downloadRepository: DownloadRepository
-) : ViewModel() {
+@Inject
+constructor(private val downloadRepository: DownloadRepository)
+    : ViewModel() {
     fun downloadX(url: String) : LiveData<LoadState<XResponse>> {
         lateinit var data : LiveData<LoadState<XResponse>>
         viewModelScope.launch {

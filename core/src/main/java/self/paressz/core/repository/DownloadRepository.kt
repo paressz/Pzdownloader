@@ -65,7 +65,7 @@ class DownloadRepository
     }
 
     val igState = MutableLiveData<LoadState<IgResponse>>()
-    fun downloadInstagramVideo(url: String) : LiveData<LoadState<IgResponse>>  {
+    suspend fun downloadInstagramVideo(url: String) : LiveData<LoadState<IgResponse>>  {
         igState.value = LoadState.Loading
         instagramService.donwloadInstagramVideo(url) .enqueue(object : Callback<IgResponse>{
             override fun onResponse(p0: Call<IgResponse>, response: Response<IgResponse>) {
