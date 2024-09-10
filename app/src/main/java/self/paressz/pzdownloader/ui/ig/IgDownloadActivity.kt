@@ -85,7 +85,7 @@ class IgDownloadActivity : AppCompatActivity() {
     suspend fun ketchDownload(url: String, fileName: String) {
         ketch.download(
             url = url,
-            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
+            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path,
             fileName = fileName
         ).also {
            repeatOnLifecycle(Lifecycle.State.STARTED) {
