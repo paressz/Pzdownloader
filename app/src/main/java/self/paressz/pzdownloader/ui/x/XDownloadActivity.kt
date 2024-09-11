@@ -66,7 +66,7 @@ class XDownloadActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         if (state.data.media != null) {
                             val videoUrl = state.data.media[0].url
-                            val fileName = createFileName("X")
+                            val fileName = createFileName("X", videoUrl)
                             ketchDownload(videoUrl, fileName)
                         } else showToast(this@XDownloadActivity, getString(R.string.invalid_url))
                     }
@@ -87,11 +87,12 @@ class XDownloadActivity : AppCompatActivity() {
             fileName = fileName,
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
         ).also {
+            ketch.observeDownloadById(it).collect { dl ->
+            Log.d("PROGRESS", "downloadVideo: ${dl.progress}")
+            showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
+            }
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                ketch.observeDownloadById(it).collect { dl ->
-                    Log.d("PROGRESS", "downloadVideo: ${dl.progress}")
-                    showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
-                }
+
             }
         }
     }
