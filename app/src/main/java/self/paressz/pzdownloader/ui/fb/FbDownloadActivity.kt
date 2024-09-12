@@ -1,4 +1,4 @@
-package self.paressz.pzdownloader.ui.ig
+package self.paressz.pzdownloader.ui.fb
 
 import android.content.Context
 import android.os.Bundle
@@ -11,31 +11,26 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.ketch.DownloadConfig
 import com.ketch.Ketch
-import com.ketch.NotificationConfig
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
-import self.paressz.pzdownloader.databinding.ActivityIgDownloadBinding
+import self.paressz.pzdownloader.databinding.ActivityFbDownloadBinding
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
 
 @AndroidEntryPoint
-class IgDownloadActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityIgDownloadBinding
-    private lateinit var ketch: Ketch
-    private val viewModel : IgDownloadViewModel by viewModels()
+class FbDownloadActivity : AppCompatActivity() {
+    lateinit var binding: ActivityFbDownloadBinding
+    lateinit var ketch: Ketch
+    val viewModel : FbDownloadViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityIgDownloadBinding.inflate(layoutInflater)
+        binding = ActivityFbDownloadBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
@@ -44,56 +39,59 @@ class IgDownloadActivity : AppCompatActivity() {
             insets
         }
         ketch = getKetch().build(this)
+        Log.d("KETCHS", "onCreate: $ketch")
         binding.btnDownload.setOnClickListener {
             hideKeyboard()
-            val url = binding.etUrl.text.toString()
-            downloadVideo(url)
+            val postUrl = binding.etUrl.text.toString()
+            downloadPost(postUrl)
         }
     }
-    fun downloadVideo(url:String) {
-            viewModel.getDownloadUrl(url).observe(this@IgDownloadActivity) { state ->
-                when (state) {
-                    is LoadState.Loading -> {
-                        showLoading(true)
-                    }
-                    is LoadState.Success -> {
+    fun downloadPost(postUrl: String) {
+        viewModel.getDownloadUrl(postUrl).observe(this) { state ->
+            when (state) {
+                is LoadState.Loading -> {
+                    showLoading(true)
+                    Log.d("LOADSTATE", "downloadPost: LOADING")
+                }
+
+                is LoadState.Success -> {
+                    Log.d("LOADSTATE", "downloadPost: SUCCESS")
+                    val data = state.data.data
+                    if (data != null) {
                         lifecycleScope.launch {
-                            if(state.data.data != null) {
-                                val data = state.data.data.get(0)
-                                val downloadUrl = data.url
-                                ketchDownload(downloadUrl, createFileName("IG", downloadUrl))
-                            } else {
-                                ToastUtil.showToast(this@IgDownloadActivity, getString(R.string.invalid_url))
-                                showLoading(false)
-                            }
+                            val downloadUrl = data.get(0).url
+                            val fileName = createFileName("FB", downloadUrl)
+                            Log.d("LOADSTATE", "downloadPost: $downloadUrl")
+                            ketchDownload(downloadUrl, fileName)
                         }
-                    }
-                    is LoadState.Error -> {
+                    } else {
+                        ToastUtil.showToast(this, getString(R.string.invalid_url))
                         showLoading(false)
-                        showErrorMessage(true, state.message)
                     }
                 }
+                is LoadState.Error -> {
+                    showLoading(false)
+                    showErrorMessage(true, state.message)
+                    Log.d("LOADSTATE", "downloadPost: ERROR")
+
+                }
             }
+        }
     }
-    suspend fun ketchDownload(url: String, fileName: String) {
+    suspend fun ketchDownload(url : String, fileName : String) {
         ketch.download(
             url = url,
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path,
             fileName = fileName
         ).also {
-               ketch.observeDownloadById(it).collect { dl ->
-                   showDownloadSuccessOrFailed(dl.status, this@IgDownloadActivity)
-                   showLoading(false)
-               }
+            ketch.observeDownloadById(it).collect { dl ->
+                Log.d("DL PROGRESS", "ketchDownload: ${dl.progress}")
+                showDownloadSuccessOrFailed(dl.status, this)
+                showLoading(false)
+            }
         }
     }
-    fun showLoading(isVisible: Boolean) {
-        if (isVisible) {
-            binding.progressBar2.visibility = View.VISIBLE
-        } else {
-            binding.progressBar2.visibility = View.GONE
-        }
-    }private fun showErrorMessage(isVisible: Boolean, message: String = "") {
+    private fun showErrorMessage(isVisible: Boolean, message: String = "") {
         if (isVisible) {
             binding.tvError.visibility = View.VISIBLE
             binding.tvError.text = message
@@ -104,5 +102,12 @@ class IgDownloadActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
+    }
+    fun showLoading(isVisible: Boolean) {
+        if (isVisible) {
+            binding.progressBar2.visibility = View.VISIBLE
+        } else {
+            binding.progressBar2.visibility = View.GONE
+        }
     }
 }

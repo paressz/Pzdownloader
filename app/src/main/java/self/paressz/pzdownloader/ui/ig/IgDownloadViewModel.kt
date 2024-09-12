@@ -12,11 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IgDownloadViewModel
-    @Inject
-    constructor(private val downloadRepository: DownloadRepository)
-    : ViewModel() {
-    fun getDownloadUrl(url :String) : LiveData<LoadState<IgResponse>> {
-        lateinit var data : LiveData<LoadState<IgResponse>>
+@Inject constructor(private val downloadRepository: DownloadRepository) : ViewModel() {
+    fun getDownloadUrl(url: String): LiveData<LoadState<IgResponse>> {
+        lateinit var data: LiveData<LoadState<IgResponse>>
         viewModelScope.launch {
             data = downloadRepository.downloadInstagramVideo(url)
         }

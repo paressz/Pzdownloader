@@ -15,9 +15,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityMainBinding
+import self.paressz.pzdownloader.ui.fb.FbDownloadActivity
 import self.paressz.pzdownloader.ui.ig.IgDownloadActivity
 import self.paressz.pzdownloader.ui.x.XDownloadActivity
-import self.paressz.pzdownloader.util.showToast
 
 class MainActivity : AppCompatActivity(), OnClickListener {
     private lateinit var binding: ActivityMainBinding
@@ -48,19 +48,31 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             }
 
             binding.fbButton.id -> {
-                showToast(this, "NOT IMPLEMENTED TRY OTHER")
+                Intent(this, FbDownloadActivity::class.java).also { startActivity(it) }
             }
         }
     }
 
     private fun requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1
+                )
             }
         } else {
             val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 ActivityCompat.requestPermissions(this, permissions, 2)
             }
         }

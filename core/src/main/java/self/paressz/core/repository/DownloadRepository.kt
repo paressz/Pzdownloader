@@ -96,7 +96,6 @@ class DownloadRepository
                     fbState.value = LoadState.Error(response.message() + response.code())
                 }
             }
-
             override fun onFailure(p0: Call<FbResponse>, response: Throwable) {
                 fbState.value = LoadState.Error(response.message.toString())
             }

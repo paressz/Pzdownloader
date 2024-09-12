@@ -7,7 +7,6 @@ import org.mockito.Mockito
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import self.paressz.core.model.FbResponse
 import self.paressz.core.network.ryzendesu.FacebookService
 
 class FbTest {

@@ -24,10 +24,10 @@ import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
+import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
-import self.paressz.pzdownloader.util.showToast
 import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
@@ -68,13 +68,12 @@ class XDownloadActivity : AppCompatActivity() {
                             val videoUrl = state.data.media[0].url
                             val fileName = createFileName("X", videoUrl)
                             ketchDownload(videoUrl, fileName)
-                        } else showToast(this@XDownloadActivity, getString(R.string.invalid_url))
+                        } else ToastUtil.showToast(this@XDownloadActivity, getString(R.string.invalid_url))
                     }
                 }
 
                 is LoadState.Error -> {
                     showLoading(false)
-                    Toast.makeText(this, "Error : ${state.message}", Toast.LENGTH_SHORT).show()
                     showErrorMessage(true, state.message)
                 }
             }
@@ -88,11 +87,9 @@ class XDownloadActivity : AppCompatActivity() {
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
         ).also {
             ketch.observeDownloadById(it).collect { dl ->
-            Log.d("PROGRESS", "downloadVideo: ${dl.progress}")
-            showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
-            }
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-
+                Log.d("PROGRESS", "downloadVideo: ${dl.progress}")
+                showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
+                showLoading(false)
             }
         }
     }
