@@ -8,9 +8,8 @@ object ToastUtil {
     fun makeText(context: Context, text : String, duration : Int = Toast.LENGTH_SHORT) : Toast {
         if (toast != null) {
             toast!!.cancel()
-        } else {
-            toast = Toast.makeText(context, text, duration)
         }
+        toast = Toast.makeText(context, text, duration)
         return toast!!
     }
     fun show() = toast!!.show()
