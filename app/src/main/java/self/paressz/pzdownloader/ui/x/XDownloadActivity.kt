@@ -49,6 +49,7 @@ class XDownloadActivity : AppCompatActivity() {
         binding.btnDownload.setOnClickListener {
             showErrorMessage(false)
             val url = binding.etUrl.text.toString()
+            if(url.isBlank()) return
             downloadVideo(url)
             hideKeyboard()
         }
