@@ -25,6 +25,7 @@ import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
 import self.paressz.pzdownloader.util.ToastUtil
+import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
@@ -47,11 +48,13 @@ class XDownloadActivity : AppCompatActivity() {
         }
         ketch = getKetch().build(this)
         binding.btnDownload.setOnClickListener {
+            hideKeyboard()
             showErrorMessage(false)
             val url = binding.etUrl.text.toString()
-            if(url.isBlank()) return
-            downloadVideo(url)
-            hideKeyboard()
+            val isUrlBlank = checkIsUrlBlank(url)
+            if(!isUrlBlank) {
+                downloadVideo(url)
+            }
         }
     }
 
