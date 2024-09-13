@@ -19,9 +19,11 @@ import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityFbDownloadBinding
 import self.paressz.pzdownloader.util.ToastUtil
+import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
+import self.paressz.pzdownloader.util.showErrorMesssage
 
 @AndroidEntryPoint
 class FbDownloadActivity : AppCompatActivity() {
@@ -39,11 +41,14 @@ class FbDownloadActivity : AppCompatActivity() {
             insets
         }
         ketch = getKetch().build(this)
-        Log.d("KETCHS", "onCreate: $ketch")
         binding.btnDownload.setOnClickListener {
+            showErrorMesssage(binding.tvError, false)
             hideKeyboard()
             val postUrl = binding.etUrl.text.toString()
-            downloadPost(postUrl)
+            val isUrlBlank = checkIsUrlBlank(postUrl)
+            if(!isUrlBlank) {
+                downloadPost(postUrl)
+            }
         }
     }
     fun downloadPost(postUrl: String) {
@@ -51,17 +56,14 @@ class FbDownloadActivity : AppCompatActivity() {
             when (state) {
                 is LoadState.Loading -> {
                     showLoading(true)
-                    Log.d("LOADSTATE", "downloadPost: LOADING")
                 }
 
                 is LoadState.Success -> {
-                    Log.d("LOADSTATE", "downloadPost: SUCCESS")
                     val data = state.data.data
                     if (data != null) {
                         lifecycleScope.launch {
                             val downloadUrl = data.get(0).url
                             val fileName = createFileName("FB", downloadUrl)
-                            Log.d("LOADSTATE", "downloadPost: $downloadUrl")
                             ketchDownload(downloadUrl, fileName)
                         }
                     } else {
@@ -72,7 +74,6 @@ class FbDownloadActivity : AppCompatActivity() {
                 is LoadState.Error -> {
                     showLoading(false)
                     showErrorMessage(true, state.message)
-                    Log.d("LOADSTATE", "downloadPost: ERROR")
 
                 }
             }
@@ -85,7 +86,6 @@ class FbDownloadActivity : AppCompatActivity() {
             fileName = fileName
         ).also {
             ketch.observeDownloadById(it).collect { dl ->
-                Log.d("DL PROGRESS", "ketchDownload: ${dl.progress}")
                 showDownloadSuccessOrFailed(dl.status, this)
                 showLoading(false)
             }

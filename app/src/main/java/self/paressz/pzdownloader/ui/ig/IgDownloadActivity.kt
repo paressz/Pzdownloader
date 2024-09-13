@@ -24,9 +24,11 @@ import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityIgDownloadBinding
 import self.paressz.pzdownloader.util.ToastUtil
+import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
+import self.paressz.pzdownloader.util.showErrorMesssage
 
 @AndroidEntryPoint
 class IgDownloadActivity : AppCompatActivity() {
@@ -45,9 +47,13 @@ class IgDownloadActivity : AppCompatActivity() {
         }
         ketch = getKetch().build(this)
         binding.btnDownload.setOnClickListener {
+            showErrorMesssage(binding.tvError, false)
             hideKeyboard()
             val url = binding.etUrl.text.toString()
-            downloadVideo(url)
+            val isUrlBlank = checkIsUrlBlank(url)
+            if(!isUrlBlank) {
+                downloadVideo(url)
+            }
         }
     }
     fun downloadVideo(url:String) {

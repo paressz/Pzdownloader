@@ -9,7 +9,7 @@ fun checkIsUrlBlank(url : String) : Boolean = url.isBlank()
 fun showLoading(progressBar: ProgressBar, isLoading : Boolean) {
     progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
 }
-fun showErrorMesssage(tv : TextView, isError : Boolean, message : String) {
+fun showErrorMesssage(tv : TextView, isError : Boolean, message : String = "") {
     if (isError) {
         tv.text = message
         tv.visibility = View.VISIBLE
