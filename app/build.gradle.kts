@@ -35,17 +35,6 @@ android {
                     }
             }
         }
-        debug {
-            applicationVariants.all {
-                val variant = this
-                variant.outputs
-                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-                    .forEach { output ->
-                        val fileName = "PzDownloader-${variant.versionName}-debug.apk"
-                        output.outputFileName = fileName
-                    }
-            }
-        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
