@@ -12,8 +12,8 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = 2
+        versionName = "0.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +25,26 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            applicationVariants.all {
+                val variant = this
+                variant.outputs
+                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                    .forEach { output ->
+                        val fileName = "PzDownloader-${variant.versionName}.apk"
+                        output.outputFileName = fileName
+                    }
+            }
+        }
+        debug {
+            applicationVariants.all {
+                val variant = this
+                variant.outputs
+                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                    .forEach { output ->
+                        val fileName = "PzDownloader-${variant.versionName}-debug.apk"
+                        output.outputFileName = fileName
+                    }
+            }
         }
     }
     compileOptions {
@@ -37,6 +57,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
