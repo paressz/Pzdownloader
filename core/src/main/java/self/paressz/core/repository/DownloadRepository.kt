@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import self.paressz.core.model.FbResponse
-import self.paressz.core.model.IgResponse
-import self.paressz.core.model.XResponse
-import self.paressz.core.model.XResponseAlter
+import self.paressz.core.model.ryzendesu.RyzenDesuFbResponse
+import self.paressz.core.model.ryzendesu.RyzenDesuIgResponse
+import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
+import self.paressz.core.model.ryzendesu.RyzenDesuXResponseAlter
 import self.paressz.core.network.ryzendesu.CdnService
 import self.paressz.core.network.ryzendesu.FacebookService
 import self.paressz.core.network.ryzendesu.InstagramService
@@ -24,39 +24,39 @@ class DownloadRepository
     private val facebookService: FacebookService,
     private val cdnService: CdnService
 )  {
-    val xState = MutableLiveData<LoadState<XResponse>>()
-    fun downloadXVideo(url: String) : LiveData<LoadState<XResponse>> {
+    val xState = MutableLiveData<LoadState<RyzenDesuXResponse>>()
+    fun downloadXVideo(url: String) : LiveData<LoadState<RyzenDesuXResponse>> {
         xState.value = LoadState.Loading
-        xService.downloadXVideo(url).enqueue(object : Callback<XResponse> {
-            override fun onResponse(call: Call<XResponse>, response: Response<XResponse>) {
+        xService.downloadXVideo(url).enqueue(object : Callback<RyzenDesuXResponse> {
+            override fun onResponse(call: Call<RyzenDesuXResponse>, response: Response<RyzenDesuXResponse>) {
                 if (response.isSuccessful) {
-                    xState.value = LoadState.Success(response.body() as XResponse)
+                    xState.value = LoadState.Success(response.body() as RyzenDesuXResponse)
                 } else {
                     xState.value = LoadState.Error(response.message() + response.code())
                 }
             }
 
-            override fun onFailure(p0: Call<XResponse>, response: Throwable) {
+            override fun onFailure(p0: Call<RyzenDesuXResponse>, response: Throwable) {
                 xState.value = LoadState.Error(response.message.toString())
             }
         })
         return xState
     }
 
-    val xStateAlter = MutableLiveData<LoadState<XResponseAlter>>()
-    fun downloadXVideoAlter(url: String) : LiveData<LoadState<XResponseAlter>> {
+    val xStateAlter = MutableLiveData<LoadState<RyzenDesuXResponseAlter>>()
+    fun downloadXVideoAlter(url: String) : LiveData<LoadState<RyzenDesuXResponseAlter>> {
         xStateAlter.value = LoadState.Loading
-        xService.downloadXVideoAlter(url).enqueue(object :Callback<XResponseAlter>{
-            override fun onResponse(p0: Call<XResponseAlter>, response: Response<XResponseAlter>) {
+        xService.downloadXVideoAlter(url).enqueue(object :Callback<RyzenDesuXResponseAlter>{
+            override fun onResponse(p0: Call<RyzenDesuXResponseAlter>, response: Response<RyzenDesuXResponseAlter>) {
                 if(response.isSuccessful) {
-                    val body = response.body() as XResponseAlter
+                    val body = response.body() as RyzenDesuXResponseAlter
                     xStateAlter.value = LoadState.Success(body)
                 } else {
                     xStateAlter.value = LoadState.Error(response.message() + response.code())
                 }
             }
 
-            override fun onFailure(p0: Call<XResponseAlter>, response: Throwable) {
+            override fun onFailure(p0: Call<RyzenDesuXResponseAlter>, response: Throwable) {
                 xStateAlter.value = LoadState.Error(response.message.toString())
             }
 
@@ -64,39 +64,39 @@ class DownloadRepository
         return xStateAlter
     }
 
-    val igState = MutableLiveData<LoadState<IgResponse>>()
-    suspend fun downloadInstagramVideo(url: String) : LiveData<LoadState<IgResponse>>  {
+    val igState = MutableLiveData<LoadState<RyzenDesuIgResponse>>()
+    suspend fun downloadInstagramVideo(url: String) : LiveData<LoadState<RyzenDesuIgResponse>>  {
         igState.value = LoadState.Loading
-        instagramService.donwloadInstagramVideo(url) .enqueue(object : Callback<IgResponse>{
-            override fun onResponse(p0: Call<IgResponse>, response: Response<IgResponse>) {
+        instagramService.donwloadInstagramVideo(url) .enqueue(object : Callback<RyzenDesuIgResponse>{
+            override fun onResponse(p0: Call<RyzenDesuIgResponse>, response: Response<RyzenDesuIgResponse>) {
                 if (response.isSuccessful) {
                     val body = response.body()
-                    igState.value = LoadState.Success(body as IgResponse)
+                    igState.value = LoadState.Success(body as RyzenDesuIgResponse)
                 } else {
                     igState.value = LoadState.Error(response.message() + response.code())
                 }
             }
 
-            override fun onFailure(p0: Call<IgResponse>, response: Throwable) {
+            override fun onFailure(p0: Call<RyzenDesuIgResponse>, response: Throwable) {
                 igState.value = LoadState.Error(response.message.toString())
             }
         })
         return igState
     }
 
-    val fbState = MutableLiveData<LoadState<FbResponse>>()
-    fun downloadFacebookVideo(url: String) : LiveData<LoadState<FbResponse>> {
+    val fbState = MutableLiveData<LoadState<RyzenDesuFbResponse>>()
+    fun downloadFacebookVideo(url: String) : LiveData<LoadState<RyzenDesuFbResponse>> {
         fbState.value = LoadState.Loading
-        facebookService.downloadFacebookVideo(url).enqueue(object :Callback<FbResponse>{
-            override fun onResponse(p0: Call<FbResponse>, response: Response<FbResponse>) {
+        facebookService.downloadFacebookVideo(url).enqueue(object :Callback<RyzenDesuFbResponse>{
+            override fun onResponse(p0: Call<RyzenDesuFbResponse>, response: Response<RyzenDesuFbResponse>) {
                 if (response.isSuccessful) {
-                    val body = response.body() as FbResponse
+                    val body = response.body() as RyzenDesuFbResponse
                     fbState.value  = LoadState.Success(body)
                 } else {
                     fbState.value = LoadState.Error(response.message() + response.code())
                 }
             }
-            override fun onFailure(p0: Call<FbResponse>, response: Throwable) {
+            override fun onFailure(p0: Call<RyzenDesuFbResponse>, response: Throwable) {
                 fbState.value = LoadState.Error(response.message.toString())
             }
         })

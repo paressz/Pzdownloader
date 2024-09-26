@@ -1,14 +1,17 @@
-package self.paressz.core.model
+package self.paressz.core.model.ryzendesu
 
 import com.google.gson.annotations.SerializedName
 
-data class FbResponse(
+data class RyzenDesuFbResponse(
 
 	@field:SerializedName("data")
-	val data: List<DataItem>,
+	val data: List<DataItem>?,
 
 	@field:SerializedName("status")
-	val status: Boolean
+	val status: Boolean,
+
+	@field:SerializedName("msg")
+	val msg: String? = null,
 ) {
 	data class DataItem(
 

@@ -29,6 +29,7 @@ import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
 import self.paressz.pzdownloader.util.showErrorMesssage
+import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
 class IgDownloadActivity : AppCompatActivity() {
@@ -56,32 +57,32 @@ class IgDownloadActivity : AppCompatActivity() {
             }
         }
     }
-    fun downloadVideo(url:String) {
+    private fun downloadVideo(url:String) {
             viewModel.getDownloadUrl(url).observe(this@IgDownloadActivity) { state ->
                 when (state) {
                     is LoadState.Loading -> {
-                        showLoading(true)
+                        showLoading(binding.progressBar2, true)
                     }
                     is LoadState.Success -> {
                         lifecycleScope.launch {
                             if(state.data.data != null) {
-                                val data = state.data.data.get(0)
+                                val data = state.data.data!!.get(0)
                                 val downloadUrl = data.url
                                 ketchDownload(downloadUrl, createFileName("IG", downloadUrl))
                             } else {
                                 ToastUtil.showToast(this@IgDownloadActivity, getString(R.string.invalid_url))
-                                showLoading(false)
+                                showLoading(binding.progressBar2,false)
                             }
                         }
                     }
                     is LoadState.Error -> {
-                        showLoading(false)
-                        showErrorMessage(true, state.message)
+                        showLoading(binding.progressBar2, false)
+                        showErrorMesssage(binding.tvError, true, state.message)
                     }
                 }
             }
     }
-    suspend fun ketchDownload(url: String, fileName: String) {
+    private suspend fun ketchDownload(url: String, fileName: String) {
         ketch.download(
             url = url,
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path,
@@ -89,22 +90,8 @@ class IgDownloadActivity : AppCompatActivity() {
         ).also {
                ketch.observeDownloadById(it).collect { dl ->
                    showDownloadSuccessOrFailed(dl.status, this@IgDownloadActivity)
-                   showLoading(false)
+                   showLoading(binding.progressBar2, false)
                }
-        }
-    }
-    fun showLoading(isVisible: Boolean) {
-        if (isVisible) {
-            binding.progressBar2.visibility = View.VISIBLE
-        } else {
-            binding.progressBar2.visibility = View.GONE
-        }
-    }private fun showErrorMessage(isVisible: Boolean, message: String = "") {
-        if (isVisible) {
-            binding.tvError.visibility = View.VISIBLE
-            binding.tvError.text = message
-        } else {
-            binding.tvError.visibility = View.GONE
         }
     }
     private fun hideKeyboard() {

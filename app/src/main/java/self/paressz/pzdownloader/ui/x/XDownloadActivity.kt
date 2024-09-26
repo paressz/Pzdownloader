@@ -29,6 +29,8 @@ import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
+import self.paressz.pzdownloader.util.showErrorMesssage
+import self.paressz.pzdownloader.util.showLoading
 import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
@@ -49,7 +51,7 @@ class XDownloadActivity : AppCompatActivity() {
         ketch = getKetch().build(this)
         binding.btnDownload.setOnClickListener {
             hideKeyboard()
-            showErrorMessage(false)
+            showErrorMesssage(binding.tvError, false)
             val url = binding.etUrl.text.toString()
             val isUrlBlank = checkIsUrlBlank(url)
             if(!isUrlBlank) {
@@ -62,23 +64,28 @@ class XDownloadActivity : AppCompatActivity() {
         viewModel.downloadX(url).observe(this) { state ->
             when (state) {
                 is LoadState.Loading -> {
-                    showLoading(true)
+                    showLoading(binding.progressBar,true)
                 }
 
                 is LoadState.Success -> {
-                    showLoading(false)
+                    showLoading(binding.progressBar, false)
                     lifecycleScope.launch {
                         if (state.data.media != null) {
-                            val videoUrl = state.data.media[0].url
+                            val videoUrl = state.data.media!!.get(0).url
                             val fileName = createFileName("X", videoUrl)
                             ketchDownload(videoUrl, fileName)
-                        } else ToastUtil.showToast(this@XDownloadActivity, getString(R.string.invalid_url))
+                        } else {
+                            ToastUtil.showToast(
+                                this@XDownloadActivity,
+                                getString(R.string.invalid_url)
+                            )
+                        }
                     }
                 }
 
                 is LoadState.Error -> {
-                    showLoading(false)
-                    showErrorMessage(true, state.message)
+                    showLoading(binding.progressBar, false)
+                    showErrorMesssage(binding.tvError, true, state.message)
                 }
             }
         }
@@ -91,23 +98,9 @@ class XDownloadActivity : AppCompatActivity() {
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
         ).also {
             ketch.observeDownloadById(it).collect { dl ->
-                Log.d("PROGRESS", "downloadVideo: ${dl.progress}")
                 showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
-                showLoading(false)
+                showLoading(binding.progressBar,false)
             }
-        }
-    }
-
-    private fun showLoading(isVisible: Boolean) {
-        binding.progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    private fun showErrorMessage(isVisible: Boolean, message: String = "") {
-        if (isVisible) {
-            binding.tvError.visibility = View.VISIBLE
-            binding.tvError.text = message
-        } else {
-            binding.tvError.visibility = View.GONE
         }
     }
     private fun hideKeyboard() {

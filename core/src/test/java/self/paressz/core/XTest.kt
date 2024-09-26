@@ -6,72 +6,72 @@ import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.Call
 import retrofit2.Callback
-import self.paressz.core.model.XResponse
-import self.paressz.core.model.XResponseAlter
+import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
+import self.paressz.core.model.ryzendesu.RyzenDesuXResponseAlter
 import self.paressz.core.network.ryzendesu.XService
 
 class XTest {
     val url = "https://x.com/Paressz/status/1829197614912508167"
     @Test
     fun downloadXVideo() {
-        val mockResponse = XResponse(
+        val mockResponse = RyzenDesuXResponse(
             status = true,
             type = "video",
             media = listOf(
-                XResponse.MediaItem(
+                RyzenDesuXResponse.MediaItem(
                     url = "https://dl.snapcdn.app/get?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3ZpZGVvLnR3aW1nLmNvbS9leHRfdHdfdmlkZW8vMTgyNjM5NDM3NzM0Mzg5MzUwNC9wdS92aWQvYXZjMS8xMjgweDcyMC90aEFpa0E0V0w5aGlhamhyLm1wND90YWc9MTIiLCJmaWxlbmFtZSI6IlNhdmVUd2l0dGVyLk5ldF90aEFpa0E0V0w5aGlhamhyXyg3MjBwKS5tcDQiLCJuYmYiOjE3MjQ3NDgzOTQsImV4cCI6MTcyNDc1MTk5NCwiaWF0IjoxNzI0NzQ4Mzk0fQ.nsJ1PuNWWyEVB7aLjBbHKLHoucR8OjIGxqFJsywcvVY",
                     quality = "720"
                 )
             )
         )
         val service = Mockito.mock(XService::class.java)
-        val call = Mockito.mock(Call::class.java) as Call<XResponse>
+        val call = Mockito.mock(Call::class.java) as Call<RyzenDesuXResponse>
         Mockito.`when`(service.downloadXVideo(url)).thenReturn(call)
         Mockito.`when`(call.enqueue(Mockito.any())).thenAnswer { invocation ->
-            val callback = invocation.getArgument<retrofit2.Callback<XResponse>>(0)
+            val callback = invocation.getArgument<retrofit2.Callback<RyzenDesuXResponse>>(0)
             callback.onResponse(call, retrofit2.Response.success(mockResponse))
         }
         val result = service.downloadXVideo(url)
-        result.enqueue(object : Callback<XResponse>{
-            override fun onResponse(p0: Call<XResponse>, p1: retrofit2.Response<XResponse>) {
+        result.enqueue(object : Callback<RyzenDesuXResponse>{
+            override fun onResponse(p0: Call<RyzenDesuXResponse>, p1: retrofit2.Response<RyzenDesuXResponse>) {
                 val response = p1.body()
                 assertEquals(mockResponse, response)
             }
 
-            override fun onFailure(p0: Call<XResponse>, p1: Throwable) {
+            override fun onFailure(p0: Call<RyzenDesuXResponse>, p1: Throwable) {
                 assertFalse("Request failed", false)
             }
         })
     }
     @Test
     fun downloadXVideoAlter() {
-        val mockResponse = XResponseAlter(
+        val mockResponse = RyzenDesuXResponseAlter(
             listOf(
-                XResponseAlter.XResponseAlterItem(
+                RyzenDesuXResponseAlter.XResponseAlterItem(
                     width = "1280",
                     url = "https://twitsave.com/download?file=aHR0cHM6Ly92aWRlby50d2ltZy5jb20vZXh0X3R3X3ZpZGVvLzE4MjYzOTQzNzczNDM4OTM1MDQvcHUvdmlkL2F2YzEvMTI4MHg3MjAvdGhBaWtBNFdMOWhpYWpoci5tcDQ%2FdGFnPTEy",
                     height = "720"
                 )
             )
         )
-        val call = Mockito.mock(Call::class.java) as Call<XResponseAlter>
+        val call = Mockito.mock(Call::class.java) as Call<RyzenDesuXResponseAlter>
         val service = Mockito.mock(XService::class.java)
         Mockito.`when`(service.downloadXVideoAlter(url)).thenReturn(call)
         Mockito.`when`(call.enqueue(Mockito.any())).thenAnswer { invocation ->
-            val callback = invocation.getArgument<retrofit2.Callback<XResponseAlter>>(0)
+            val callback = invocation.getArgument<retrofit2.Callback<RyzenDesuXResponseAlter>>(0)
             callback.onResponse(call, retrofit2.Response.success(mockResponse))
         }
         val result = service.downloadXVideoAlter(url)
-        result.enqueue(object : Callback<XResponseAlter> {
+        result.enqueue(object : Callback<RyzenDesuXResponseAlter> {
             override fun onResponse(
-                p0: Call<XResponseAlter>,
-                p1: retrofit2.Response<XResponseAlter>
+                p0: Call<RyzenDesuXResponseAlter>,
+                p1: retrofit2.Response<RyzenDesuXResponseAlter>
             ) {
                 val response = p1.body()
                 assertEquals(mockResponse, response)
             }
 
-            override fun onFailure(p0: Call<XResponseAlter>, p1: Throwable) {
+            override fun onFailure(p0: Call<RyzenDesuXResponseAlter>, p1: Throwable) {
                 assertFalse("Request failed", false)
             }
         })

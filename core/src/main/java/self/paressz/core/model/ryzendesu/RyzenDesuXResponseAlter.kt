@@ -1,8 +1,8 @@
-package self.paressz.core.model
+package self.paressz.core.model.ryzendesu
 
 import com.google.gson.annotations.SerializedName
 
-data class XResponseAlter(
+data class RyzenDesuXResponseAlter(
 	@field:SerializedName("XResponseAlter")
 	val xResponseAlter: List<XResponseAlterItem>
 ) {

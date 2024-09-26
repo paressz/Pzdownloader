@@ -24,6 +24,7 @@ import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
 import self.paressz.pzdownloader.util.showErrorMesssage
+import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
 class FbDownloadActivity : AppCompatActivity() {
@@ -55,7 +56,7 @@ class FbDownloadActivity : AppCompatActivity() {
         viewModel.getDownloadUrl(postUrl).observe(this) { state ->
             when (state) {
                 is LoadState.Loading -> {
-                    showLoading(true)
+                    showLoading(binding.progressBar2, true)
                 }
 
                 is LoadState.Success -> {
@@ -68,12 +69,12 @@ class FbDownloadActivity : AppCompatActivity() {
                         }
                     } else {
                         ToastUtil.showToast(this, getString(R.string.invalid_url))
-                        showLoading(false)
+                        showLoading(binding.progressBar2, false)
                     }
                 }
                 is LoadState.Error -> {
-                    showLoading(false)
-                    showErrorMessage(true, state.message)
+                    showLoading(binding.progressBar2, false)
+                    showErrorMesssage(binding.tvError ,true, state.message)
 
                 }
             }
@@ -87,27 +88,12 @@ class FbDownloadActivity : AppCompatActivity() {
         ).also {
             ketch.observeDownloadById(it).collect { dl ->
                 showDownloadSuccessOrFailed(dl.status, this)
-                showLoading(false)
+                showLoading(binding.progressBar2, false)
             }
-        }
-    }
-    private fun showErrorMessage(isVisible: Boolean, message: String = "") {
-        if (isVisible) {
-            binding.tvError.visibility = View.VISIBLE
-            binding.tvError.text = message
-        } else {
-            binding.tvError.visibility = View.GONE
         }
     }
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
-    }
-    fun showLoading(isVisible: Boolean) {
-        if (isVisible) {
-            binding.progressBar2.visibility = View.VISIBLE
-        } else {
-            binding.progressBar2.visibility = View.GONE
-        }
     }
 }
