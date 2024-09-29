@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
+import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
@@ -34,9 +35,10 @@ import self.paressz.pzdownloader.util.showLoading
 import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
-class XDownloadActivity : AppCompatActivity() {
+class XDownloadActivity : BaseActivity() {
     private lateinit var binding: ActivityXDownloadBinding
     private lateinit var ketch: Ketch
+
     private val viewModel: XDownloadViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

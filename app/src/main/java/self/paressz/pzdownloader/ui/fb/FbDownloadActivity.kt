@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityFbDownloadBinding
+import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
@@ -27,7 +28,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class FbDownloadActivity : AppCompatActivity() {
+class FbDownloadActivity : BaseActivity() {
     lateinit var binding: ActivityFbDownloadBinding
     lateinit var ketch: Ketch
     val viewModel : FbDownloadViewModel by viewModels()

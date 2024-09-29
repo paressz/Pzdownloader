@@ -1,4 +1,4 @@
-package self.paressz.pzdownloader.ui
+package self.paressz.pzdownloader.ui.main
 
 import android.Manifest
 import android.content.Intent
@@ -8,18 +8,18 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityMainBinding
+import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.ui.fb.FbDownloadActivity
 import self.paressz.pzdownloader.ui.ig.IgDownloadActivity
 import self.paressz.pzdownloader.ui.x.XDownloadActivity
 
-class MainActivity : AppCompatActivity(), OnClickListener {
+class MainActivity : BaseActivity(), OnClickListener {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

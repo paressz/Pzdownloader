@@ -53,4 +53,5 @@
         <item name="colorOnCustomColor1Container">@color/colorOnCustomColor1Container</item>
     </style>
     <style name="Theme.Pzdownloader" parent="Base.Theme.Pzdownloader" />
+    <style name="MaterialDynamic.Theme" parent="Theme.Material3.DynamicColors.Dark.NoActionBar"/>
 </resources>
