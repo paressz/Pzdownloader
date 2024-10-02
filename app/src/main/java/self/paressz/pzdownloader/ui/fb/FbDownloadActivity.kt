@@ -1,14 +1,12 @@
 package self.paressz.pzdownloader.ui.fb
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -43,6 +41,7 @@ class FbDownloadActivity : BaseActivity() {
             insets
         }
         ketch = getKetch().build(this)
+        getSharedLinkIntent()
         binding.btnDownload.setOnClickListener {
             showErrorMesssage(binding.tvError, false)
             hideKeyboard()
@@ -96,5 +95,15 @@ class FbDownloadActivity : BaseActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
+    }
+    private fun getSharedLinkIntent() {
+        if (intent != null && intent.action == Intent.ACTION_SEND) {
+            intent.getStringExtra(Intent.EXTRA_TEXT).let { sharedLink ->
+                if (sharedLink != null && sharedLink.contains("facebook.com"))
+                    binding.etUrl.setText(sharedLink)
+                else
+                    ToastUtil.showToast(this, getString(R.string.invalid_url_facebook))
+            }
+        }
     }
 }

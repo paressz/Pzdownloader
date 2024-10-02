@@ -1,7 +1,9 @@
 package self.paressz.core.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,17 +29,42 @@ class DownloadRepository
     val xState = MutableLiveData<LoadState<RyzenDesuXResponse>>()
     fun downloadXVideo(url: String) : LiveData<LoadState<RyzenDesuXResponse>> {
         xState.value = LoadState.Loading
-        xService.downloadXVideo(url).enqueue(object : Callback<RyzenDesuXResponse> {
-            override fun onResponse(call: Call<RyzenDesuXResponse>, response: Response<RyzenDesuXResponse>) {
-                if (response.isSuccessful) {
-                    xState.value = LoadState.Success(response.body() as RyzenDesuXResponse)
+        xService.downloadXVideo(url).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(p0: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val jsonResponse = response.body()!!
+                    Log.d("json response x repo", "onResponse: ${jsonResponse.toString()}")
+                    jsonResponse.let {
+                        val type = it.get("type")?.asString
+                        val status = it.get("status")?.asBoolean
+                        val msg = it.get("msg")?.asString
+                        val medias = it.get("media")?.asJsonArray
+                        val mediaItem = mutableListOf<RyzenDesuXResponse.Media>()
+                        if(type == "video") {
+                            medias?.forEach { media ->
+                                val mediaObj = media.asJsonObject
+                                val url = mediaObj.get("url").asString
+                                val quality = mediaObj.get("quality").asString
+                                mediaItem.add(RyzenDesuXResponse.Media.MultiType(url, quality))
+                            }
+                        } else if (type == "image") {
+                            medias?.forEach { media ->
+                                val imageUrl = media.asString
+                                mediaItem.add(RyzenDesuXResponse.Media.Image(imageUrl))
+                            }
+                        }
+                        if(status != null)
+                            xState.value = LoadState.Success(RyzenDesuXResponse(mediaItem, type, status, msg))
+                        else
+                            xState.value = LoadState.Error("Failed to fetch data : Status is null")
+                    }
                 } else {
                     xState.value = LoadState.Error(response.message() + response.code())
                 }
             }
 
-            override fun onFailure(p0: Call<RyzenDesuXResponse>, response: Throwable) {
-                xState.value = LoadState.Error(response.message.toString())
+            override fun onFailure(p0: Call<JsonObject>, t: Throwable) {
+                xState.value = LoadState.Error(t.message.toString())
             }
         })
         return xState

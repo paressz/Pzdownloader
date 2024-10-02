@@ -18,7 +18,7 @@ class XTest {
             status = true,
             type = "video",
             media = listOf(
-                RyzenDesuXResponse.MediaItem(
+                RyzenDesuXResponse.MediaMulti(
                     url = "https://dl.snapcdn.app/get?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3ZpZGVvLnR3aW1nLmNvbS9leHRfdHdfdmlkZW8vMTgyNjM5NDM3NzM0Mzg5MzUwNC9wdS92aWQvYXZjMS8xMjgweDcyMC90aEFpa0E0V0w5aGlhamhyLm1wND90YWc9MTIiLCJmaWxlbmFtZSI6IlNhdmVUd2l0dGVyLk5ldF90aEFpa0E0V0w5aGlhamhyXyg3MjBwKS5tcDQiLCJuYmYiOjE3MjQ3NDgzOTQsImV4cCI6MTcyNDc1MTk5NCwiaWF0IjoxNzI0NzQ4Mzk0fQ.nsJ1PuNWWyEVB7aLjBbHKLHoucR8OjIGxqFJsywcvVY",
                     quality = "720"
                 )

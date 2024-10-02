@@ -1,6 +1,7 @@
 package self.paressz.pzdownloader.ui.ig
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.view.inputmethod.InputMethodManager
@@ -41,7 +42,6 @@ class IgDownloadActivity : BaseActivity() {
             insets
         }
         ketch = getKetch().build(this)
-        if (intent != null) getSharedLink()
         binding.btnDownload.setOnClickListener {
             showErrorMesssage(binding.tvError, false)
             hideKeyboard()
@@ -103,11 +103,13 @@ class IgDownloadActivity : BaseActivity() {
     }
 
     private fun getSharedLink() {
-        handleShareIntent(intent) { sharedLink ->
-            binding.etUrl.setText(sharedLink)
-        }.let { proccessCode ->
-            if (proccessCode == 0) ToastUtil.showToast(this, getString(R.string.invalid_url_instagram))
-            else if (proccessCode == -1) ToastUtil.showToast(this, getString(R.string.fetch_failed))
+        if (intent != null && intent.action == Intent.ACTION_SEND) {
+            intent.getStringExtra(Intent.EXTRA_TEXT).let { sharedLink ->
+                if (sharedLink != null && sharedLink.contains("instagram.com"))
+                    binding.etUrl.setText(sharedLink)
+                else
+                    ToastUtil.showToast(this, getString(R.string.invalid_url_instagram))
+            }
         }
     }
 }

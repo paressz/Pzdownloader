@@ -1,6 +1,7 @@
 package self.paressz.pzdownloader.ui.x
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -20,7 +21,12 @@ import com.ketch.Ketch
 import com.ketch.NotificationConfig
 import com.ketch.Status
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
@@ -50,6 +56,7 @@ class XDownloadActivity : BaseActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        getSharedLink()
         ketch = getKetch().build(this)
         binding.btnDownload.setOnClickListener {
             hideKeyboard()
@@ -72,10 +79,21 @@ class XDownloadActivity : BaseActivity() {
                 is LoadState.Success -> {
                     showLoading(binding.progressBar, false)
                     lifecycleScope.launch {
-                        if (state.data.media != null) {
-                            val videoUrl = state.data.media!!.get(0).url
-                            val fileName = createFileName("X", videoUrl)
-                            ketchDownload(videoUrl, fileName)
+                        val data = state.data
+                        if (data.media != null) {
+                            val medias = data.media!!
+                            for (i in medias.indices) {
+                                Log.d("DL LOOP", "downloadVideoLoop: $i")
+                                if(medias[i] is RyzenDesuXResponse.Media.MultiType) {
+                                    val media = medias[i] as RyzenDesuXResponse.Media.MultiType
+                                    val fileName = createFileName("X", media.url)
+                                    ketchDownload(media.url, "${i}_${fileName}")
+                                } else if (medias[i] is RyzenDesuXResponse.Media.Image){
+                                    val media = medias[i] as RyzenDesuXResponse.Media.Image
+                                    val fileName = createFileName("X", media.url)
+                                    ketchDownload(media.url, "${i}_${fileName}")
+                                }
+                            }
                         } else {
                             ToastUtil.showToast(
                                 this@XDownloadActivity,
@@ -93,20 +111,25 @@ class XDownloadActivity : BaseActivity() {
         }
     }
 
-    private suspend fun ketchDownload(downloadUrl: String, fileName: String) {
-        ketch.download(
+    private fun ketchDownload(downloadUrl: String, fileName: String) : Int {
+        return ketch.download(
             url = downloadUrl,
             fileName = fileName,
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
-        ).also {
-            ketch.observeDownloadById(it).collect { dl ->
-                showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
-                showLoading(binding.progressBar,false)
-            }
-        }
+        )
     }
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
+    }
+    private fun getSharedLink() {
+        if (intent != null && intent.action == Intent.ACTION_SEND) {
+            intent.getStringExtra(Intent.EXTRA_TEXT).let { sharedLink ->
+                if (sharedLink != null && sharedLink.contains("x.com"))
+                    binding.etUrl.setText(sharedLink)
+                else
+                    ToastUtil.showToast(this, getString(R.string.invalid_url_x))
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 package self.paressz.core.network.ryzendesu
 
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -12,7 +14,7 @@ interface XService {
     @GET("downloader/twitter")
     fun downloadXVideo(
         @Query("url") url : String
-    ) : Call<RyzenDesuXResponse>
+    ) : Call<JsonObject>
 
     @GET("downloader/twitter2")
     fun downloadXVideoAlter(
