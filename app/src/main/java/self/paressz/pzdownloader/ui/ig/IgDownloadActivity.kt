@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -18,16 +20,14 @@ import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityIgDownloadBinding
 import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
-import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
-import self.paressz.pzdownloader.util.handleShareIntent
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
 import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class IgDownloadActivity : BaseActivity() {
+class IgDownloadActivity : BaseActivity(), OnClickListener {
     private lateinit var binding: ActivityIgDownloadBinding
     private lateinit var ketch: Ketch
     private val viewModel: IgDownloadViewModel by viewModels()
@@ -42,18 +42,12 @@ class IgDownloadActivity : BaseActivity() {
             insets
         }
         ketch = getKetch().build(this)
-        binding.btnDownload.setOnClickListener {
-            showErrorMesssage(binding.tvError, false)
-            hideKeyboard()
-            val url = binding.etUrl.text.toString()
-            val isUrlBlank = checkIsUrlBlank(url)
-            if (!isUrlBlank) {
-                downloadVideo(url)
-            }
-        }
+        getSharedLink()
+        binding.btnDownload.setOnClickListener(this)
+        binding.btnPaste.setOnClickListener(this)
     }
 
-    private fun downloadVideo(url: String) {
+    private fun downloadPost(url: String) {
         viewModel.getDownloadUrl(url).observe(this@IgDownloadActivity) { state ->
             when (state) {
                 is LoadState.Loading -> {
@@ -109,6 +103,23 @@ class IgDownloadActivity : BaseActivity() {
                     binding.etUrl.setText(sharedLink)
                 else
                     ToastUtil.showToast(this, getString(R.string.invalid_url_instagram))
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            binding.btnPaste.id -> {
+                val pastedText = getTextFromClipboard()
+                if(pastedText.isNotBlank())
+                    binding.etUrl.setText(pastedText)
+            }
+            binding.btnDownload.id -> {
+                showErrorMesssage(binding.tvError, false)
+                hideKeyboard()
+                val postUrl = binding.etUrl.text.toString()
+                if(postUrl.isNotBlank())
+                    downloadPost(postUrl)
             }
         }
     }

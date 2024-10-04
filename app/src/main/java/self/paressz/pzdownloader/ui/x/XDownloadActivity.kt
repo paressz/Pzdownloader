@@ -6,25 +6,15 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.ketch.DownloadConfig
 import com.ketch.Ketch
-import com.ketch.NotificationConfig
-import com.ketch.Status
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
 import self.paressz.core.repository.LoadState
@@ -32,16 +22,13 @@ import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
 import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
-import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
-import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
 import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
-import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
-class XDownloadActivity : BaseActivity() {
+class XDownloadActivity : BaseActivity(), OnClickListener {
     private lateinit var binding: ActivityXDownloadBinding
     private lateinit var ketch: Ketch
 
@@ -58,18 +45,11 @@ class XDownloadActivity : BaseActivity() {
         }
         getSharedLink()
         ketch = getKetch().build(this)
-        binding.btnDownload.setOnClickListener {
-            hideKeyboard()
-            showErrorMesssage(binding.tvError, false)
-            val url = binding.etUrl.text.toString()
-            val isUrlBlank = checkIsUrlBlank(url)
-            if(!isUrlBlank) {
-                downloadVideo(url)
-            }
-        }
+        binding.btnDownload.setOnClickListener(this)
+        binding.btnPaste.setOnClickListener(this)
     }
 
-    private fun downloadVideo(url: String) {
+    private fun downloadPost(url: String) {
         viewModel.downloadX(url).observe(this) { state ->
             when (state) {
                 is LoadState.Loading -> {
@@ -129,6 +109,23 @@ class XDownloadActivity : BaseActivity() {
                     binding.etUrl.setText(sharedLink)
                 else
                     ToastUtil.showToast(this, getString(R.string.invalid_url_x))
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            binding.btnPaste.id -> {
+                val pastedText = getTextFromClipboard()
+                if(pastedText.isNotBlank())
+                    binding.etUrl.setText(pastedText)
+            }
+            binding.btnDownload.id -> {
+                showErrorMesssage(binding.tvError, false)
+                hideKeyboard()
+                val postUrl = binding.etUrl.text.toString()
+                if(postUrl.isNotBlank())
+                    downloadPost(postUrl)
             }
         }
     }

@@ -10,14 +10,14 @@
     <EditText
         android:id="@+id/etUrl"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:inputType="textUri"
         android:hint="@string/url_hint_fb"
+        android:inputType="textUri"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnPaste"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,5 +58,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+    <Button
+        android:id="@+id/btnPaste"
+        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        app:icon="@drawable/copy_svgrepo_com"
+        app:iconGravity="textEnd"
+        app:iconPadding="0dp"
+        app:iconSize="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etUrl" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

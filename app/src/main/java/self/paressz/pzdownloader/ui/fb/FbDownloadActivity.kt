@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -18,7 +20,6 @@ import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityFbDownloadBinding
 import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
-import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
@@ -26,7 +27,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class FbDownloadActivity : BaseActivity() {
+class FbDownloadActivity : BaseActivity(), OnClickListener {
     lateinit var binding: ActivityFbDownloadBinding
     lateinit var ketch: Ketch
     val viewModel : FbDownloadViewModel by viewModels()
@@ -42,15 +43,8 @@ class FbDownloadActivity : BaseActivity() {
         }
         ketch = getKetch().build(this)
         getSharedLinkIntent()
-        binding.btnDownload.setOnClickListener {
-            showErrorMesssage(binding.tvError, false)
-            hideKeyboard()
-            val postUrl = binding.etUrl.text.toString()
-            val isUrlBlank = checkIsUrlBlank(postUrl)
-            if(!isUrlBlank) {
-                downloadPost(postUrl)
-            }
-        }
+        binding.btnDownload.setOnClickListener(this)
+        binding.btnPaste.setOnClickListener(this)
     }
     fun downloadPost(postUrl: String) {
         viewModel.getDownloadUrl(postUrl).observe(this) { state ->
@@ -103,6 +97,23 @@ class FbDownloadActivity : BaseActivity() {
                     binding.etUrl.setText(sharedLink)
                 else
                     ToastUtil.showToast(this, getString(R.string.invalid_url_facebook))
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            binding.btnPaste.id -> {
+                val pastedText = getTextFromClipboard()
+                if(pastedText.isNotBlank())
+                    binding.etUrl.setText(pastedText)
+            }
+            binding.btnDownload.id -> {
+                showErrorMesssage(binding.tvError, false)
+                hideKeyboard()
+                val postUrl = binding.etUrl.text.toString()
+                if(postUrl.isNotBlank())
+                    downloadPost(postUrl)
             }
         }
     }
