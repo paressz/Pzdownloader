@@ -32,7 +32,6 @@ class RyzendesuDownloadRepository
             override fun onResponse(p0: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     val jsonResponse = response.body()!!
-                    Log.d("json response x repo", "onResponse: ${jsonResponse.toString()}")
                     jsonResponse.let {
                         val type = it.get("type")?.asString
                         val status = it.get("status")?.asBoolean
@@ -92,7 +91,7 @@ class RyzendesuDownloadRepository
     }
 
     val igState = MutableLiveData<LoadState<RyzenDesuIgResponse>>()
-    suspend fun downloadInstagramVideo(url: String) : LiveData<LoadState<RyzenDesuIgResponse>>  {
+    fun downloadInstagramVideo(url: String) : LiveData<LoadState<RyzenDesuIgResponse>>  {
         igState.value = LoadState.Loading
         ryzendesuInstagramService.donwloadInstagramVideo(url) .enqueue(object : Callback<RyzenDesuIgResponse>{
             override fun onResponse(p0: Call<RyzenDesuIgResponse>, response: Response<RyzenDesuIgResponse>) {
