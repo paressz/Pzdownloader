@@ -4,29 +4,25 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import self.paressz.core.network.ryzendesu.CdnService
-import self.paressz.core.network.ryzendesu.FacebookService
-import self.paressz.core.network.ryzendesu.InstagramService
+import self.paressz.core.network.ryzendesu.RyzendesuFacebookService
+import self.paressz.core.network.ryzendesu.RyzendesuInstagramService
 import self.paressz.core.network.ryzendesu.RyzendesuApiClient
-import self.paressz.core.network.ryzendesu.XService
-import self.paressz.core.repository.DownloadRepository
+import self.paressz.core.network.ryzendesu.RyzendesuXService
+import self.paressz.core.repository.ryzendesu.RyzendesuDownloadRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides
-    fun provideXService() = RyzendesuApiClient.getXService()
+    fun provideRyzendesuXService() = RyzendesuApiClient.getXService()
     @Provides
-    fun provideInstagramService() = RyzendesuApiClient.getInstagramService()
+    fun provideRyzendesuInstagramService() = RyzendesuApiClient.getInstagramService()
     @Provides
-    fun provideFacebookService() = RyzendesuApiClient.getFacebookService()
-    @Provides
-    fun provideCdnService() = RyzendesuApiClient.getCdnService()
+    fun provideRyzendesuFacebookService() = RyzendesuApiClient.getFacebookService()
     @Provides
     fun provideDownloadRepository(
-        xService: XService,
-        instagramService: InstagramService,
-        facebookService: FacebookService,
-        cdnService: CdnService
-    ) = DownloadRepository(xService, instagramService, facebookService, cdnService)
+        ryzendesuXService: RyzendesuXService,
+        ryzendesuInstagramService: RyzendesuInstagramService,
+        ryzendesuFacebookService: RyzendesuFacebookService,
+    ) = RyzendesuDownloadRepository(ryzendesuXService, ryzendesuInstagramService, ryzendesuFacebookService)
 }

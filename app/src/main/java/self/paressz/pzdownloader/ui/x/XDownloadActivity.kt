@@ -1,42 +1,37 @@
 package self.paressz.pzdownloader.ui.x
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.ketch.DownloadConfig
 import com.ketch.Ketch
-import com.ketch.NotificationConfig
-import com.ketch.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
+import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
-import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
-import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
 import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
-import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
-class XDownloadActivity : AppCompatActivity() {
+class XDownloadActivity : BaseActivity(), OnClickListener {
     private lateinit var binding: ActivityXDownloadBinding
     private lateinit var ketch: Ketch
+
     private val viewModel: XDownloadViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,19 +43,13 @@ class XDownloadActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        getSharedLink()
         ketch = getKetch().build(this)
-        binding.btnDownload.setOnClickListener {
-            hideKeyboard()
-            showErrorMesssage(binding.tvError, false)
-            val url = binding.etUrl.text.toString()
-            val isUrlBlank = checkIsUrlBlank(url)
-            if(!isUrlBlank) {
-                downloadVideo(url)
-            }
-        }
+        binding.btnDownload.setOnClickListener(this)
+        binding.btnPaste.setOnClickListener(this)
     }
 
-    private fun downloadVideo(url: String) {
+    private fun downloadPost(url: String) {
         viewModel.downloadX(url).observe(this) { state ->
             when (state) {
                 is LoadState.Loading -> {
@@ -70,10 +59,21 @@ class XDownloadActivity : AppCompatActivity() {
                 is LoadState.Success -> {
                     showLoading(binding.progressBar, false)
                     lifecycleScope.launch {
-                        if (state.data.media != null) {
-                            val videoUrl = state.data.media!!.get(0).url
-                            val fileName = createFileName("X", videoUrl)
-                            ketchDownload(videoUrl, fileName)
+                        val data = state.data
+                        if (data.media != null) {
+                            val medias = data.media!!
+                            for (i in medias.indices) {
+                                Log.d("DL LOOP", "downloadVideoLoop: $i")
+                                if(medias[i] is RyzenDesuXResponse.Media.MultiType) {
+                                    val media = medias[i] as RyzenDesuXResponse.Media.MultiType
+                                    val fileName = createFileName("X", media.url)
+                                    ketchDownload(media.url, "${i}_${fileName}")
+                                } else if (medias[i] is RyzenDesuXResponse.Media.Image){
+                                    val media = medias[i] as RyzenDesuXResponse.Media.Image
+                                    val fileName = createFileName("X", media.url)
+                                    ketchDownload(media.url, "${i}_${fileName}")
+                                }
+                            }
                         } else {
                             ToastUtil.showToast(
                                 this@XDownloadActivity,
@@ -91,20 +91,42 @@ class XDownloadActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun ketchDownload(downloadUrl: String, fileName: String) {
-        ketch.download(
+    private fun ketchDownload(downloadUrl: String, fileName: String) : Int {
+        return ketch.download(
             url = downloadUrl,
             fileName = fileName,
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
-        ).also {
-            ketch.observeDownloadById(it).collect { dl ->
-                showDownloadSuccessOrFailed(dl.status, this@XDownloadActivity)
-                showLoading(binding.progressBar,false)
-            }
-        }
+        )
     }
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
+    }
+    private fun getSharedLink() {
+        if (intent != null && intent.action == Intent.ACTION_SEND) {
+            intent.getStringExtra(Intent.EXTRA_TEXT).let { sharedLink ->
+                if (sharedLink != null && sharedLink.contains("x.com"))
+                    binding.etUrl.setText(sharedLink)
+                else
+                    ToastUtil.showToast(this, getString(R.string.invalid_url_x))
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            binding.btnPaste.id -> {
+                val pastedText = getTextFromClipboard()
+                if(pastedText.isNotBlank())
+                    binding.etUrl.setText(pastedText)
+            }
+            binding.btnDownload.id -> {
+                showErrorMesssage(binding.tvError, false)
+                hideKeyboard()
+                val postUrl = binding.etUrl.text.toString()
+                if(postUrl.isNotBlank())
+                    downloadPost(postUrl)
+            }
+        }
     }
 }

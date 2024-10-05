@@ -1,14 +1,14 @@
 package self.paressz.pzdownloader.ui.fb
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityFbDownloadBinding
+import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.util.ToastUtil
-import self.paressz.pzdownloader.util.checkIsUrlBlank
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
 import self.paressz.pzdownloader.util.showDownloadSuccessOrFailed
@@ -27,7 +27,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class FbDownloadActivity : AppCompatActivity() {
+class FbDownloadActivity : BaseActivity(), OnClickListener {
     lateinit var binding: ActivityFbDownloadBinding
     lateinit var ketch: Ketch
     val viewModel : FbDownloadViewModel by viewModels()
@@ -42,15 +42,9 @@ class FbDownloadActivity : AppCompatActivity() {
             insets
         }
         ketch = getKetch().build(this)
-        binding.btnDownload.setOnClickListener {
-            showErrorMesssage(binding.tvError, false)
-            hideKeyboard()
-            val postUrl = binding.etUrl.text.toString()
-            val isUrlBlank = checkIsUrlBlank(postUrl)
-            if(!isUrlBlank) {
-                downloadPost(postUrl)
-            }
-        }
+        getSharedLinkIntent()
+        binding.btnDownload.setOnClickListener(this)
+        binding.btnPaste.setOnClickListener(this)
     }
     fun downloadPost(postUrl: String) {
         viewModel.getDownloadUrl(postUrl).observe(this) { state ->
@@ -95,5 +89,32 @@ class FbDownloadActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
+    }
+    private fun getSharedLinkIntent() {
+        if (intent != null && intent.action == Intent.ACTION_SEND) {
+            intent.getStringExtra(Intent.EXTRA_TEXT).let { sharedLink ->
+                if (sharedLink != null && sharedLink.contains("facebook.com"))
+                    binding.etUrl.setText(sharedLink)
+                else
+                    ToastUtil.showToast(this, getString(R.string.invalid_url_facebook))
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            binding.btnPaste.id -> {
+                val pastedText = getTextFromClipboard()
+                if(pastedText.isNotBlank())
+                    binding.etUrl.setText(pastedText)
+            }
+            binding.btnDownload.id -> {
+                showErrorMesssage(binding.tvError, false)
+                hideKeyboard()
+                val postUrl = binding.etUrl.text.toString()
+                if(postUrl.isNotBlank())
+                    downloadPost(postUrl)
+            }
+        }
     }
 }

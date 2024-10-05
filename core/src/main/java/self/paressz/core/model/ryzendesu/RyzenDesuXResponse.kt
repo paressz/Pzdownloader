@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class RyzenDesuXResponse(
 
 	@field:SerializedName("media")
-	val media: List<MediaItem>? = null,
+	val media: List<Media>? = null,
 
 	@field:SerializedName("type")
-	val type: String,
+	val type: String?,
 
 	@field:SerializedName("status")
 	val status: Boolean,
@@ -16,13 +16,12 @@ data class RyzenDesuXResponse(
 	@field:SerializedName("msg")
 	val msg: String? = null,
 ) {
-	data class MediaItem(
-
-		@field:SerializedName("url")
-		val url: String,
-
-		@field:SerializedName("quality")
-		val quality: String
-	)
+	sealed class Media {
+		data class MultiType(
+			@field:SerializedName("url") val url: String,
+			@field:SerializedName("quality") val quality: String
+		) : Media()
+		data class Image(val url: String) : Media()
+	}
 }
 

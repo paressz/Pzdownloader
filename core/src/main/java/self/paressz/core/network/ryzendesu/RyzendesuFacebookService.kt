@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import self.paressz.core.model.ryzendesu.RyzenDesuFbResponse
 
-interface FacebookService {
+interface RyzendesuFacebookService {
     @GET("downloader/fbdl")
     fun downloadFacebookVideo(
         @Query("url") url : String
