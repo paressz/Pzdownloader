@@ -14,10 +14,9 @@ object RyzendesuApiClient {
     private val retrofit = Retrofit.Builder().baseUrl(BASE_URL).client(OkHttpLogClient.getClient())
         .addConverterFactory(GsonConverterFactory.create()).build()
 
-    fun getXService() = retrofit.create(XService::class.java)
-    fun getInstagramService() = retrofit.create(InstagramService::class.java)
-    fun getFacebookService() = retrofit.create(FacebookService::class.java)
-    fun getCdnService() = retrofit.create(CdnService::class.java)
+    fun getXService() = retrofit.create(RyzendesuXService::class.java)
+    fun getInstagramService() = retrofit.create(RyzendesuInstagramService::class.java)
+    fun getFacebookService() = retrofit.create(RyzendesuFacebookService::class.java)
 }
 
 class MyCookieJar : CookieJar {

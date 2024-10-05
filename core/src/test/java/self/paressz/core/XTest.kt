@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
 import self.paressz.core.model.ryzendesu.RyzenDesuXResponseAlter
-import self.paressz.core.network.ryzendesu.XService
+import self.paressz.core.network.ryzendesu.RyzendesuXService
 
 class XTest {
     val url = "https://x.com/Paressz/status/1829197614912508167"
@@ -24,7 +24,7 @@ class XTest {
                 )
             )
         )
-        val service = Mockito.mock(XService::class.java)
+        val service = Mockito.mock(RyzendesuXService::class.java)
         val call = Mockito.mock(Call::class.java) as Call<RyzenDesuXResponse>
         Mockito.`when`(service.downloadXVideo(url)).thenReturn(call)
         Mockito.`when`(call.enqueue(Mockito.any())).thenAnswer { invocation ->
@@ -55,7 +55,7 @@ class XTest {
             )
         )
         val call = Mockito.mock(Call::class.java) as Call<RyzenDesuXResponseAlter>
-        val service = Mockito.mock(XService::class.java)
+        val service = Mockito.mock(RyzendesuXService::class.java)
         Mockito.`when`(service.downloadXVideoAlter(url)).thenReturn(call)
         Mockito.`when`(call.enqueue(Mockito.any())).thenAnswer { invocation ->
             val callback = invocation.getArgument<retrofit2.Callback<RyzenDesuXResponseAlter>>(0)
