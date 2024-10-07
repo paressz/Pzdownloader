@@ -25,7 +25,7 @@ fun getKetch(): Ketch.Companion.Builder {
             )
         ).setNotificationConfig(
             NotificationConfig(
-                enabled = isOreoAndHigher,
+                enabled = true,
                 smallIcon = R.drawable.ic_launcher_foreground,
                 showSpeed = true,
                 showSize = true
