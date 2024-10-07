@@ -1,7 +1,7 @@
 [versions]
-kotlinxCoroutine= "1.9.0-RC.2"
+kotlinxCoroutine = "1.9.0-RC.2"
 
 [libraries]
-kotlinx-coroutine = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref="kotlinxCoroutine"}
+kotlinx-coroutine = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutine" }
 [plugins]
 
