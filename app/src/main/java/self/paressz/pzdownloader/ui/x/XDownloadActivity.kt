@@ -16,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.ketch.Ketch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import self.paressz.core.model.ryzendesu.RyzenDesuXResponse
+import self.paressz.core.model.ryzendesu.RyzendesuXResponse
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityXDownloadBinding
@@ -31,8 +31,8 @@ import self.paressz.pzdownloader.util.showLoading
 class XDownloadActivity : BaseActivity(), OnClickListener {
     private lateinit var binding: ActivityXDownloadBinding
     private lateinit var ketch: Ketch
-
     private val viewModel: XDownloadViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityXDownloadBinding.inflate(layoutInflater)
@@ -64,12 +64,12 @@ class XDownloadActivity : BaseActivity(), OnClickListener {
                             val medias = data.media!!
                             for (i in medias.indices) {
                                 Log.d("DL LOOP", "downloadVideoLoop: $i")
-                                if(medias[i] is RyzenDesuXResponse.Media.MultiType) {
-                                    val media = medias[i] as RyzenDesuXResponse.Media.MultiType
+                                if(medias[i] is RyzendesuXResponse.Media.MultiType) {
+                                    val media = medias[i] as RyzendesuXResponse.Media.MultiType
                                     val fileName = createFileName("X", media.url)
                                     ketchDownload(media.url, "${i}_${fileName}")
-                                } else if (medias[i] is RyzenDesuXResponse.Media.Image){
-                                    val media = medias[i] as RyzenDesuXResponse.Media.Image
+                                } else if (medias[i] is RyzendesuXResponse.Media.Image){
+                                    val media = medias[i] as RyzendesuXResponse.Media.Image
                                     val fileName = createFileName("X", media.url)
                                     ketchDownload(media.url, "${i}_${fileName}")
                                 }

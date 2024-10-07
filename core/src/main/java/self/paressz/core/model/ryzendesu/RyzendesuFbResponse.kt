@@ -2,7 +2,7 @@ package self.paressz.core.model.ryzendesu
 
 import com.google.gson.annotations.SerializedName
 
-data class RyzenDesuFbResponse(
+data class RyzendesuFbResponse(
 
 	@field:SerializedName("data")
 	val data: List<DataItem>?,

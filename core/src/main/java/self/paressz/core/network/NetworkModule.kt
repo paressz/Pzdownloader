@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import self.paressz.core.network.ryzendesu.RyzendesuFacebookService
 import self.paressz.core.network.ryzendesu.RyzendesuInstagramService
 import self.paressz.core.network.ryzendesu.RyzendesuApiClient
+import self.paressz.core.network.ryzendesu.RyzendesuTiktokService
 import self.paressz.core.network.ryzendesu.RyzendesuXService
 import self.paressz.core.repository.ryzendesu.RyzendesuDownloadRepository
 
@@ -20,9 +21,12 @@ object NetworkModule {
     @Provides
     fun provideRyzendesuFacebookService() = RyzendesuApiClient.getFacebookService()
     @Provides
+    fun provideRyzendesuTiktokService() = RyzendesuApiClient.getTiktokService()
+    @Provides
     fun provideDownloadRepository(
         ryzendesuXService: RyzendesuXService,
         ryzendesuInstagramService: RyzendesuInstagramService,
         ryzendesuFacebookService: RyzendesuFacebookService,
-    ) = RyzendesuDownloadRepository(ryzendesuXService, ryzendesuInstagramService, ryzendesuFacebookService)
+        ryzendesuTiktokService: RyzendesuTiktokService
+    ) = RyzendesuDownloadRepository(ryzendesuXService, ryzendesuInstagramService, ryzendesuFacebookService, ryzendesuTiktokService)
 }

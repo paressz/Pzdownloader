@@ -2,7 +2,7 @@ package self.paressz.core.model.ryzendesu
 
 import com.google.gson.annotations.SerializedName
 
-data class RyzenDesuXResponse(
+data class RyzendesuXResponse(
 
 	@field:SerializedName("media")
 	val media: List<Media>? = null,

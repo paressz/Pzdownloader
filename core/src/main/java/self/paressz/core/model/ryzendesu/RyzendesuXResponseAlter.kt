@@ -2,7 +2,7 @@ package self.paressz.core.model.ryzendesu
 
 import com.google.gson.annotations.SerializedName
 
-data class RyzenDesuXResponseAlter(
+data class RyzendesuXResponseAlter(
 	@field:SerializedName("XResponseAlter")
 	val xResponseAlter: List<XResponseAlterItem>
 ) {
