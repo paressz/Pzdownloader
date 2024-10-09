@@ -1,10 +1,18 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.library" )
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
 }
-
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if(localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+val GITHUB_TOKEN = localProperties.getProperty("GITHUB_TOKEN") ?: ""
 android {
     namespace = "self.paressz.core"
     compileSdk = 34
@@ -23,6 +31,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "GITHUB_TOKEN", "\"${GITHUB_TOKEN}\"")
+        }
+        debug {
+            buildConfigField("String", "GITHUB_TOKEN", "\"${GITHUB_TOKEN}\"")
         }
     }
     compileOptions {

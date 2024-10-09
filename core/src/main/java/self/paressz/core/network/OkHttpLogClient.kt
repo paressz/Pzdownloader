@@ -1,9 +1,11 @@
 package self.paressz.core.network
 
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import self.paressz.core.BuildConfig
-import self.paressz.core.network.ryzendesu.MyCookieJar
 import java.util.concurrent.TimeUnit
 
 object OkHttpLogClient {
@@ -18,4 +20,15 @@ object OkHttpLogClient {
             .addInterceptor(loggingInterceptor)
             .cookieJar(MyCookieJar())
             .build()
+}
+class MyCookieJar : CookieJar {
+    private val cookieStore: MutableMap<HttpUrl, MutableList<Cookie>> = HashMap()
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        cookieStore[url] = cookies.toMutableList()
+    }
+
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        return cookieStore[url] ?: emptyList()
+    }
 }

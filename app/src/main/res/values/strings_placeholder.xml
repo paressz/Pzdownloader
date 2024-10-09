@@ -2,9 +2,10 @@
 <resources>
     <string name="main_item_description_placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit</string>
     <string name="main_item_title_placeholder">Lorem</string>
-    <string name="url_hint_x" translatable="false">https://x.com/user/status/1234567890</string>
-    <string name="url_hint_ig">full link to reel or post</string>
     <string name="url_hint_fb" translatable="false">https://www.facebook.com/share/r/reel_id</string>
+    <string name="url_hint_ig" translatable="false">full link to reel or post</string>
+    <style name="url_hint_tiktok" translatable="false">https://www.tiktok.com/@username/video/post_id</style>
+    <string name="url_hint_x" translatable="false">https://x.com/user/status/1234567890</string>
     <string name="download_text">Download</string>
     <string name="download_x">Download images and videos from X</string>"
     <string name="download_instagram">Download images and videos from Instagram</string>"

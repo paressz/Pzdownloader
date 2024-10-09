@@ -1,8 +1,5 @@
 package self.paressz.core.network.ryzendesu
 
-import okhttp3.Cookie
-import okhttp3.CookieJar
-import okhttp3.HttpUrl
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import self.paressz.core.network.OkHttpLogClient
@@ -20,14 +17,3 @@ object RyzendesuApiClient {
     fun getFacebookService() = retrofit.create(RyzendesuFacebookService::class.java)
 }
 
-class MyCookieJar : CookieJar {
-    private val cookieStore: MutableMap<HttpUrl, MutableList<Cookie>> = HashMap()
-
-    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        cookieStore[url] = cookies.toMutableList()
-    }
-
-    override fun loadForRequest(url: HttpUrl): List<Cookie> {
-        return cookieStore[url] ?: emptyList()
-    }
-}

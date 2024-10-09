@@ -1,23 +1,42 @@
 package self.paressz.pzdownloader.ui.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import self.paressz.core.repository.LoadState
+import self.paressz.pzdownloader.BuildConfig
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityMainBinding
 import self.paressz.pzdownloader.model.MainItem
 import self.paressz.pzdownloader.model.MainType
 import self.paressz.pzdownloader.ui.BaseActivity
+import self.paressz.pzdownloader.updater.UpdateManager
+import self.paressz.pzdownloader.util.ToastUtil
+import self.paressz.pzdownloader.util.newVersionAvailable
+import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var updater : UpdateManager
+    val viewModel : MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,6 +49,8 @@ class MainActivity : BaseActivity() {
         }
         setupRv()
         requestPermission()
+        if(isConnectedToInternet()) checkForUpdate()
+        else ToastUtil.showToast(this, "NEED INTERNET")
     }
 
     fun setupRv() {
@@ -65,6 +86,52 @@ class MainActivity : BaseActivity() {
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(this, permissions, 2)
+            }
+        }
+    }
+    private fun isConnectedToInternet() : Boolean {
+        val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = cm.activeNetwork
+            cm.getNetworkCapabilities(networkCapabilities).let {
+                when {
+                    it == null -> return false
+                    it.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) -> return true
+                    else -> return false
+                }
+            }
+        } else {
+            val netInfo = cm.activeNetworkInfo
+            return netInfo != null && netInfo.isConnected
+        }
+    }
+    private fun showUpdateDialog(versionTag: String, changelog: String, url : String) {
+        val dialog = UpdateDialog(this)
+        dialog.setTexts(versionTag, changelog)
+        dialog.setOnUpdateButtonClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
+        }
+        dialog.show()
+    }
+
+    private fun checkForUpdate() {
+        updater = UpdateManager(this)
+        val lastCheck = updater.getLastCheckTime()
+        val currentTime = System.currentTimeMillis()
+        if(currentTime - lastCheck >= TimeUnit.DAYS.toMillis(1)) {
+            Log.d("TIMES", "checkForUpdate: $currentTime $lastCheck ${TimeUnit.DAYS.toMillis(1)}")
+            viewModel.checkForUpdate().observe(this@MainActivity) { state ->
+                if (state is LoadState.Success) {
+                    val releaseData = state.data
+                    val latestVersion = releaseData.tagName.removePrefix("v.")
+                    val currentVersion= BuildConfig.VERSION_NAME
+                    Log.d("VERSION", "checkForUpdate: ${latestVersion} ${currentVersion}")
+                    updater.updateLastCheckTime(currentTime)
+                    if(newVersionAvailable(latestVersion, currentVersion)) {
+                        showUpdateDialog(releaseData.tagName, releaseData.body, releaseData.releaseUrl)
+                    }
+                }
             }
         }
     }

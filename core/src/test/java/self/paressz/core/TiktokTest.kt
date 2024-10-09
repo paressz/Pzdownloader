@@ -58,7 +58,7 @@ class TiktokTest {
         })
         try {
             latch.await()
-        } catch (e: InterruptedException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
