@@ -7,8 +7,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TiktokDownloadViewModel
-@Inject constructor(
-    private val ryzendesuDownloadRepository: RyzendesuDownloadRepository)
-    : ViewModel()  {
-
+@Inject
+constructor(private val ryzendesuDownloadRepository: RyzendesuDownloadRepository) : ViewModel()  {
+    fun downloadVideo(url : String) = ryzendesuDownloadRepository.downloadTiktokVideo(url)
 }
