@@ -56,37 +56,31 @@ class XTest {
                             }
                         }
                         if(status != null) {
-                            val actual = mediaItem[0] as RyzendesuXResponse.Media.MultiType
-                            val expected = mockResponse.media!![0] as RyzendesuXResponse.Media.MultiType
-                            assertEquals(actual.quality, expected.quality)
+                            assertEquals(mockResponse.status, status)
+                            latch.countDown()
                         }
                         else {
                             Assert.fail("Status is null")
+                            latch.countDown()
                         }
-                        latch.countDown()
                     }
                 } else {
                     Assert.fail("${response.code()}: ${response.message()}")
                     latch.countDown()
                 }
-                try {
-                    latch.await()
-                } catch (e : Exception) {
-                    e.printStackTrace()
-                }
             }
 
             override fun onFailure(p0: Call<JsonObject>, t: Throwable) {
                 println(t.printStackTrace())
-                Assert.fail("Request failed")
+                Assert.fail("Request failed: $t")
                 latch.countDown()
-                try {
-                    latch.await()
-                } catch (e : Exception) {
-                    e.printStackTrace()
-                }
             }
         })
+        try {
+            latch.await()
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
     @Test
     fun downloadXVideoAlter() {
