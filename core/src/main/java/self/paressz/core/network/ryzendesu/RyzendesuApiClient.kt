@@ -13,7 +13,10 @@ object RyzendesuApiClient {
 
     fun getXService() = retrofit.create(RyzendesuXService::class.java)
     fun getInstagramService() = retrofit.create(RyzendesuInstagramService::class.java)
+<<<<<<< HEAD
     fun getTiktokService() = retrofit.create(RyzendesuTiktokService::class.java)
+=======
+>>>>>>> master
     fun getFacebookService() = retrofit.create(RyzendesuFacebookService::class.java)
 }
 

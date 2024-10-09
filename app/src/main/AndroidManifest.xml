@@ -23,41 +23,66 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pzdownloader"
+<<<<<<< HEAD
         tools:targetApi="34">
         <activity
             android:name=".ui.tiktok.TiktokDownloadActivity"
             android:exported="false" />
+=======
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="34">
+>>>>>>> master
         <activity
             android:name=".ui.fb.FbDownloadActivity"
             android:exported="true">
             <intent-filter android:label="FB">
+<<<<<<< HEAD
                 <action android:name="android.intent.action.SEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
+=======
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+
+>>>>>>> master
         </activity>
         <activity
             android:name=".ui.x.XDownloadActivity"
             android:exported="true">
             <intent-filter android:label="X">
+<<<<<<< HEAD
                 <action android:name="android.intent.action.SEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="text/plain" />
+=======
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+>>>>>>> master
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.ig.IgDownloadActivity"
             android:exported="true">
             <intent-filter android:label="IG">
+<<<<<<< HEAD
                 <action android:name="android.intent.action.SEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="text/*" />
+=======
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/*"/>
+>>>>>>> master
             </intent-filter>
         </activity>
         <activity

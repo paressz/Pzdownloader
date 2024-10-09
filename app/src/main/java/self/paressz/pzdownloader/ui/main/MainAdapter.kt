@@ -11,7 +11,10 @@ import self.paressz.pzdownloader.model.MainItem
 import self.paressz.pzdownloader.model.MainType
 import self.paressz.pzdownloader.ui.fb.FbDownloadActivity
 import self.paressz.pzdownloader.ui.ig.IgDownloadActivity
+<<<<<<< HEAD
 import self.paressz.pzdownloader.ui.tiktok.TiktokDownloadActivity
+=======
+>>>>>>> master
 import self.paressz.pzdownloader.ui.x.XDownloadActivity
 import self.paressz.pzdownloader.util.ToastUtil
 
@@ -42,7 +45,11 @@ class MainAdapter(val items: List<MainItem>, val context: Context) : RecyclerVie
                         Intent(context, XDownloadActivity::class.java).also { context.startActivity(it) }
                     }
                     MainType.TIKTOK  -> {
+<<<<<<< HEAD
                         Intent(context, TiktokDownloadActivity::class.java).also { context.startActivity(it) }
+=======
+                        ToastUtil.showToast(context, "Coming soon")
+>>>>>>> master
                     }
                 }
             }

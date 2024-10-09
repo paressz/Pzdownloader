@@ -9,15 +9,24 @@ import org.mockito.Mockito
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+<<<<<<< HEAD
 import self.paressz.core.model.ryzendesu.RyzendesuIgResponse
 import self.paressz.core.network.ryzendesu.RyzendesuApiClient
 import self.paressz.core.network.ryzendesu.RyzendesuInstagramService
 import java.util.concurrent.CountDownLatch
+=======
+import self.paressz.core.model.ryzendesu.RyzenDesuIgResponse
+import self.paressz.core.network.ryzendesu.RyzendesuInstagramService
+>>>>>>> master
 
 class IgTest {
     @Test
     fun testIgDownload() {
+<<<<<<< HEAD
         val service = RyzendesuApiClient.getInstagramService()
+=======
+        val service = Mockito.mock(RyzendesuInstagramService::class.java)
+>>>>>>> master
         val testUrl = "https://www.instagram.com/reel/C_uvsRKyRp1/"
         val mockResponse = RyzendesuIgResponse(
             status = true,

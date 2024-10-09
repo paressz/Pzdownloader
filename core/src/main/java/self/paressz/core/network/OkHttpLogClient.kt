@@ -6,6 +6,10 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import self.paressz.core.BuildConfig
+<<<<<<< HEAD
+=======
+import self.paressz.core.network.ryzendesu.MyCookieJar
+>>>>>>> master
 import java.util.concurrent.TimeUnit
 
 object OkHttpLogClient {
@@ -20,6 +24,7 @@ object OkHttpLogClient {
             .addInterceptor(loggingInterceptor)
             .cookieJar(MyCookieJar())
             .build()
+<<<<<<< HEAD
 }
 class MyCookieJar : CookieJar {
     private val cookieStore: MutableMap<HttpUrl, MutableList<Cookie>> = HashMap()
@@ -31,4 +36,6 @@ class MyCookieJar : CookieJar {
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
         return cookieStore[url] ?: emptyList()
     }
+=======
+>>>>>>> master
 }

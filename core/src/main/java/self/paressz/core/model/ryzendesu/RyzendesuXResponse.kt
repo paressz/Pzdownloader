@@ -2,7 +2,7 @@ package self.paressz.core.model.ryzendesu
 
 import com.google.gson.annotations.SerializedName
 
-data class RyzendesuXResponse(
+data class RyzenDesuXResponse(
 
 	@field:SerializedName("media")
 	val media: List<Media>? = null,
@@ -24,4 +24,5 @@ data class RyzendesuXResponse(
 		data class Image(val url: String) : Media()
 	}
 }
+
 

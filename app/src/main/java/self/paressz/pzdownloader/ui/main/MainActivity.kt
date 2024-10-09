@@ -1,6 +1,7 @@
 package self.paressz.pzdownloader.ui.main
 
 import android.Manifest
+<<<<<<< HEAD
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -11,21 +12,32 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+=======
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+>>>>>>> master
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+<<<<<<< HEAD
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.BuildConfig
+=======
+import androidx.recyclerview.widget.GridLayoutManager
+>>>>>>> master
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityMainBinding
 import self.paressz.pzdownloader.model.MainItem
 import self.paressz.pzdownloader.model.MainType
 import self.paressz.pzdownloader.ui.BaseActivity
+<<<<<<< HEAD
 import self.paressz.pzdownloader.updater.UpdateManager
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.newVersionAvailable
@@ -37,6 +49,11 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var updater : UpdateManager
     val viewModel : MainViewModel by viewModels()
+=======
+
+class MainActivity : BaseActivity() {
+    private lateinit var binding: ActivityMainBinding
+>>>>>>> master
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,8 +66,11 @@ class MainActivity : BaseActivity() {
         }
         setupRv()
         requestPermission()
+<<<<<<< HEAD
         if(isConnectedToInternet()) checkForUpdate()
         else ToastUtil.showToast(this, "NEED INTERNET")
+=======
+>>>>>>> master
     }
 
     fun setupRv() {
@@ -89,6 +109,7 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+<<<<<<< HEAD
     private fun isConnectedToInternet() : Boolean {
         val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -135,4 +156,6 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+=======
+>>>>>>> master
 }

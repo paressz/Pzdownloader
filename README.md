@@ -24,14 +24,26 @@ Runs on Android 5.0+
 </div>
 
 ## Disclaimer
+<<<<<<< HEAD
 *This application hots zero of its downloaded content*
+=======
+*This application hosts zero of its downloaded content*
+>>>>>>> master
 
 ## Todo
 
 <div align="left">
 
+<<<<<<< HEAD
 * Add more download API
 * 
 </div>
 
 </div>
+=======
+* Download from other social media apps
+* Add more download API
+</div>
+
+</div>
+>>>>>>> master

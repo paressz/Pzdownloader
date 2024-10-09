@@ -1,5 +1,6 @@
 package self.paressz.core.network.ryzendesu
 
+<<<<<<< HEAD
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,4 +12,7 @@ interface RyzendesuTiktokService {
         @Query("url") url : String
     ) : Call<RyzendesuTiktokResponse>
 
+=======
+interface RyzendesuTiktokService {
+>>>>>>> master
 }
