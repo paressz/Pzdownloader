@@ -1,11 +1,9 @@
-package self.paressz.pzdownloader
+package self.paressz.pzdownloader.util
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.junit.Test
-import self.paressz.pzdownloader.util.createFileName
-import self.paressz.pzdownloader.util.guessFileType
 import java.text.SimpleDateFormat
 
 class DownloadUtilTest {

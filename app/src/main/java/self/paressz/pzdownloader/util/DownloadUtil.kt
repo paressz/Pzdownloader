@@ -18,14 +18,14 @@ fun showDownloadSuccessOrFailed(status: Status, context: Context) {
  * @return A configured [Ketch.Companion.Builder] instance.
  */
 fun getKetch(): Ketch.Companion.Builder {
-    val isOreoAndHigher = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    val isMarshmallowOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
     return Ketch.builder().setDownloadConfig(
             DownloadConfig(
                 connectTimeOutInMs = 15000, readTimeOutInMs = 15000
             )
         ).setNotificationConfig(
             NotificationConfig(
-                enabled = true,
+                enabled = isMarshmallowOrLater,
                 smallIcon = R.drawable.ic_launcher_foreground,
                 showSpeed = true,
                 showSize = true

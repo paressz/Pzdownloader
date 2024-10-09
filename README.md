@@ -24,14 +24,14 @@ Runs on Android 5.0+
 </div>
 
 ## Disclaimer
-*This application hots zero of its downloaded content*
+*This application hosts zero of its downloaded content*
 
 ## Todo
 
 <div align="left">
 
 * Add more download API
-* 
+
 </div>
 
 </div>

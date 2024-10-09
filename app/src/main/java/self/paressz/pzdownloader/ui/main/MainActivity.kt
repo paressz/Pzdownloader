@@ -15,10 +15,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.BuildConfig
 import self.paressz.pzdownloader.R
@@ -29,7 +27,6 @@ import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.updater.UpdateManager
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.newVersionAvailable
-import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
@@ -124,9 +121,8 @@ class MainActivity : BaseActivity() {
             viewModel.checkForUpdate().observe(this@MainActivity) { state ->
                 if (state is LoadState.Success) {
                     val releaseData = state.data
-                    val latestVersion = releaseData.tagName.removePrefix("v.")
+                    val latestVersion = releaseData.tagName.removePrefix("v")
                     val currentVersion= BuildConfig.VERSION_NAME
-                    Log.d("VERSION", "checkForUpdate: ${latestVersion} ${currentVersion}")
                     updater.updateLastCheckTime(currentTime)
                     if(newVersionAvailable(latestVersion, currentVersion)) {
                         showUpdateDialog(releaseData.tagName, releaseData.body, releaseData.releaseUrl)
