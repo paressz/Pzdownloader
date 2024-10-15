@@ -26,7 +26,13 @@
         tools:targetApi="34">
         <activity
             android:name=".ui.tiktok.TiktokDownloadActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter android:label="Tiktok">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.fb.FbDownloadActivity"
             android:exported="true">
@@ -57,7 +63,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="text/*" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
