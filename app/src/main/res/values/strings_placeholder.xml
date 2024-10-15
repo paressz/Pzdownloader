@@ -4,11 +4,14 @@
     <string name="main_item_title_placeholder">Lorem</string>
     <string name="url_hint_fb" translatable="false">https://www.facebook.com/share/r/reel_id</string>
     <string name="url_hint_ig" translatable="false">full link to reel or post</string>
-    <style name="url_hint_tiktok" translatable="false">https://www.tiktok.com/@username/video/post_id</style>
+    <string name="url_hint_tiktok" translatable="false">https://www.tiktok.com/@username/video/post_id</string>
     <string name="url_hint_x" translatable="false">https://x.com/user/status/1234567890</string>
     <string name="download_text">Download</string>
     <string name="download_x">Download images and videos from X</string>"
     <string name="download_instagram">Download images and videos from Instagram</string>"
     <string name="download_facebook">Download reels from Facebook</string>
     <string name="download_tiktok">Download video from Tiktok</string>
+    <string name="download_server_text">Download server</string>
+    <string name="server_1_text">Server 1</string>
+    <string name="server_2_text">Server 2</string>
 </resources>

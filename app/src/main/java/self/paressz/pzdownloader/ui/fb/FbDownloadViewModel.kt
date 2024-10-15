@@ -12,11 +12,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FbDownloadViewModel
-@Inject constructor(private val ryzendesuDownloadRepository: RyzendesuDownloadRepository) : ViewModel() {
+@Inject
+constructor(private val ryzendesuDownloadRepository: RyzendesuDownloadRepository) : ViewModel() {
+
+    var choosenServer = 0
+
     fun getDownloadUrl(postUrl: String): LiveData<LoadState<RyzendesuFbResponse>> {
         lateinit var data: LiveData<LoadState<RyzendesuFbResponse>>
         viewModelScope.launch {
             data = ryzendesuDownloadRepository.downloadFacebookVideo(postUrl)
+        }
+        return data
+    }
+
+    fun getDownloadUrlFromBackup(postUrl: String): LiveData<LoadState<RyzendesuFbResponse>> {
+        lateinit var data: LiveData<LoadState<RyzendesuFbResponse>>
+        viewModelScope.launch {
+            data = ryzendesuDownloadRepository.downloadFacebookVideoFromBackup(postUrl)
         }
         return data
     }

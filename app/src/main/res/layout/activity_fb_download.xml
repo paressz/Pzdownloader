@@ -9,26 +9,49 @@
 
     <EditText
         android:id="@+id/etUrl"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
         android:hint="@string/url_hint_fb"
-        android:inputType="textUri"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnPaste"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/input_url_style" />
+
+    <TextView
+        android:id="@+id/tvDownloadServer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/etUrl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
+        android:textAlignment="center"
+        android:text="@string/download_server_text"
+        />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDownloadServer"
+        style="@style/radio_group_style">
+
+        <RadioButton
+            android:id="@+id/radioMainServer"
+            android:text="@string/server_1_text"
+            style="@style/radio_button_style" />
+        <RadioButton
+            android:id="@+id/radioBackupServer"
+            style="@style/radio_button_style"
+            android:text="@string/server_2_text"
+            />
+    </RadioGroup>
 
     <Button
         android:id="@+id/btnDownload"
+        style="@style/button_download"
         android:text="@string/download_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUrl"
-        style="@style/button_download"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <ProgressBar
         android:id="@+id/progressBar2"
@@ -55,6 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
     <Button
         android:id="@+id/btnPaste"
         style="@style/button_paste"
@@ -62,7 +86,9 @@
         app:iconGravity="textEnd"
         app:iconPadding="0dp"
         app:iconSize="28dp"
+        app:layout_constraintBottom_toBottomOf="@+id/etUrl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/etUrl" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

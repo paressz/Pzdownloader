@@ -1,5 +1,6 @@
 package self.paressz.core.repository.ryzendesu
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
@@ -10,7 +11,8 @@ import self.paressz.core.model.ryzendesu.RyzendesuFbResponse
 import self.paressz.core.model.ryzendesu.RyzendesuIgResponse
 import self.paressz.core.model.ryzendesu.RyzendesuTiktokResponse
 import self.paressz.core.model.ryzendesu.RyzendesuXResponse
-import self.paressz.core.model.ryzendesu.RyzendesuXResponseAlter
+import self.paressz.core.network.ryzendesu.RyzendesuBackupServer
+import self.paressz.core.network.ryzendesu.RyzendesuMainServer
 import self.paressz.core.network.ryzendesu.RyzendesuFacebookService
 import self.paressz.core.network.ryzendesu.RyzendesuInstagramService
 import self.paressz.core.network.ryzendesu.RyzendesuTiktokService
@@ -22,10 +24,14 @@ import javax.inject.Singleton
 @Singleton
 class RyzendesuDownloadRepository
 @Inject constructor(
-    private val ryzendesuXService: RyzendesuXService,
-    private val ryzendesuInstagramService: RyzendesuInstagramService,
-    private val ryzendesuFacebookService: RyzendesuFacebookService,
-    private val ryzendesuTiktokService: RyzendesuTiktokService
+    @RyzendesuMainServer private val ryzendesuXService: RyzendesuXService,
+    @RyzendesuMainServer private val ryzendesuInstagramService: RyzendesuInstagramService,
+    @RyzendesuMainServer private val ryzendesuFacebookService: RyzendesuFacebookService,
+    @RyzendesuMainServer private val ryzendesuTiktokService: RyzendesuTiktokService,
+    @RyzendesuBackupServer private val ryzendesuBackupXService: RyzendesuXService,
+    @RyzendesuBackupServer private val ryzendesuBackupInstagramService: RyzendesuInstagramService,
+    @RyzendesuBackupServer private val ryzendesuBackupFacebookService: RyzendesuFacebookService,
+    @RyzendesuBackupServer private val ryzendesuBackupTiktokService: RyzendesuTiktokService,
 )  {
     val xState = MutableLiveData<LoadState<RyzendesuXResponse>>()
     fun downloadXVideo(url: String) : LiveData<LoadState<RyzendesuXResponse>> {
@@ -137,5 +143,117 @@ class RyzendesuDownloadRepository
             }
         })
         return tiktokState
+    }
+
+    val xStateBackup = MutableLiveData<LoadState<RyzendesuXResponse>>()
+    fun downloadXVideoFromBackup(url: String) : LiveData<LoadState<RyzendesuXResponse>> {
+        xStateBackup.value = LoadState.Loading
+        ryzendesuBackupXService.downloadXVideo(url).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(p0: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val jsonResponse = response.body()!!
+                    jsonResponse.let {
+                        val type = it.get("type")?.asString
+                        val status = it.get("status")?.asBoolean
+                        val msg = it.get("msg")?.asString
+                        val medias = it.get("media")?.asJsonArray
+                        val mediaItem = mutableListOf<RyzendesuXResponse.Media>()
+                        if(type == "video") {
+                            medias?.forEach { media ->
+                                val mediaObj = media.asJsonObject
+                                val url = mediaObj.get("url").asString
+                                val quality = mediaObj.get("quality").asString
+                                mediaItem.add(RyzendesuXResponse.Media.MultiType(url, quality))
+                            }
+                        } else if (type == "image") {
+                            medias?.forEach { media ->
+                                val imageUrl = media.asString
+                                mediaItem.add(RyzendesuXResponse.Media.Image(imageUrl))
+                            }
+                        }
+                        if(status != null)
+                            xStateBackup.value =
+                                LoadState.Success(RyzendesuXResponse(mediaItem, type, status, msg))
+                        else
+                            xStateBackup.value = LoadState.Error("Failed to fetch data : Status is null")
+                    }
+                } else {
+                    xStateBackup.value = LoadState.Error(response.message() + response.code())
+                }
+            }
+
+            override fun onFailure(p0: Call<JsonObject>, t: Throwable) {
+                xStateBackup.value = LoadState.Error(t.message.toString())
+            }
+        })
+        return xStateBackup
+    }
+
+    val igStateBackup = MutableLiveData<LoadState<RyzendesuIgResponse>>()
+    fun downloadInstagramVideoFromBackup(url: String) : LiveData<LoadState<RyzendesuIgResponse>>  {
+        igStateBackup.value = LoadState.Loading
+        ryzendesuBackupInstagramService.donwloadInstagramVideo(url) .enqueue(object : Callback<RyzendesuIgResponse>{
+            override fun onResponse(p0: Call<RyzendesuIgResponse>, response: Response<RyzendesuIgResponse>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    igStateBackup.value = LoadState.Success(body as RyzendesuIgResponse)
+                } else {
+                    igStateBackup.value = LoadState.Error(response.message() + response.code())
+                }
+            }
+
+            override fun onFailure(p0: Call<RyzendesuIgResponse>, response: Throwable) {
+                igStateBackup.value = LoadState.Error(response.message.toString())
+            }
+        })
+        return igStateBackup
+    }
+
+    val fbStateBackup = MutableLiveData<LoadState<RyzendesuFbResponse>>()
+    fun downloadFacebookVideoFromBackup(url: String) : LiveData<LoadState<RyzendesuFbResponse>> {
+        fbStateBackup.value = LoadState.Loading
+        ryzendesuBackupFacebookService.downloadFacebookVideo(url).enqueue(object :Callback<RyzendesuFbResponse>{
+            override fun onResponse(p0: Call<RyzendesuFbResponse>, response: Response<RyzendesuFbResponse>) {
+                if (response.isSuccessful) {
+                    val body = response.body() as RyzendesuFbResponse
+                    fbStateBackup.value  = LoadState.Success(body)
+                } else {
+                    fbStateBackup.value = LoadState.Error(response.message() + response.code())
+                }
+            }
+            override fun onFailure(p0: Call<RyzendesuFbResponse>, response: Throwable) {
+                fbStateBackup.value = LoadState.Error(response.message.toString())
+            }
+        })
+        return fbStateBackup
+    }
+
+    val tiktokStateBackup = MutableLiveData<LoadState<RyzendesuTiktokResponse>>()
+    fun downloadTiktokVideoFromBackup(url: String) : LiveData<LoadState<RyzendesuTiktokResponse>> {
+        tiktokStateBackup.value = LoadState.Loading
+        ryzendesuBackupTiktokService.downloadTiktokVideo(url).enqueue(object :Callback<RyzendesuTiktokResponse>{
+            override fun onResponse(
+                p0: Call<RyzendesuTiktokResponse>,
+                response: Response<RyzendesuTiktokResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        if (responseBody.code == 0) {
+                            tiktokStateBackup.value = LoadState.Success(responseBody as RyzendesuTiktokResponse)
+                        } else {
+                            tiktokStateBackup.value = LoadState.Error(responseBody.msg)
+                        }
+                    } else {
+                        tiktokStateBackup.value = LoadState.Error("Response body is null")
+                    }
+                }
+            }
+
+            override fun onFailure(p0: Call<RyzendesuTiktokResponse>, t: Throwable) {
+                tiktokStateBackup.value = LoadState.Error(t.message.toString())
+            }
+        })
+        return tiktokStateBackup
     }
 }

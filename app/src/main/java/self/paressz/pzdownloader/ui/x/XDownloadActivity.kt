@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.RadioGroup
+import android.widget.RadioGroup.OnCheckedChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
@@ -28,7 +30,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class XDownloadActivity : BaseActivity(), OnClickListener {
+class XDownloadActivity : BaseActivity(), OnClickListener, OnCheckedChangeListener {
     private lateinit var binding: ActivityXDownloadBinding
     private lateinit var ketch: Ketch
     private val viewModel: XDownloadViewModel by viewModels()
@@ -47,46 +49,95 @@ class XDownloadActivity : BaseActivity(), OnClickListener {
         ketch = getKetch().build(this)
         binding.btnDownload.setOnClickListener(this)
         binding.btnPaste.setOnClickListener(this)
+        binding.radioGroup.setOnCheckedChangeListener(this)
+        binding.radioMainServer.isChecked = true
     }
 
-    private fun downloadPost(url: String) {
-        viewModel.downloadX(url).observe(this) { state ->
-            when (state) {
-                is LoadState.Loading -> {
-                    showLoading(binding.progressBar,true)
-                }
+    private fun downloadAllPost(url: String) {
+        when(viewModel.choosenServer) {
+            0 -> {
+                viewModel.downloadX(url).observe(this) { state ->
+                    when (state) {
+                        is LoadState.Loading -> {
+                            showLoading(binding.progressBar,true)
+                        }
 
-                is LoadState.Success -> {
-                    showLoading(binding.progressBar, false)
-                    lifecycleScope.launch {
-                        val data = state.data
-                        if (data.media != null) {
-                            val medias = data.media!!
-                            for (i in medias.indices) {
-                                Log.d("DL LOOP", "downloadVideoLoop: $i")
-                                if(medias[i] is RyzendesuXResponse.Media.MultiType) {
-                                    val media = medias[i] as RyzendesuXResponse.Media.MultiType
-                                    val fileName = createFileName("X", media.url)
-                                    ketchDownload(media.url, "${i}_${fileName}")
-                                } else if (medias[i] is RyzendesuXResponse.Media.Image){
-                                    val media = medias[i] as RyzendesuXResponse.Media.Image
-                                    val fileName = createFileName("X", media.url)
-                                    ketchDownload(media.url, "${i}_${fileName}")
+                        is LoadState.Success -> {
+                            showLoading(binding.progressBar, false)
+                            lifecycleScope.launch {
+                                val data = state.data
+                                if (data.media != null) {
+                                    val medias = data.media!!
+                                    for (i in medias.indices) {
+                                        Log.d("DL LOOP", "downloadVideoLoop: $i")
+                                        if(medias[i] is RyzendesuXResponse.Media.MultiType) {
+                                            val media = medias[i] as RyzendesuXResponse.Media.MultiType
+                                            val fileName = createFileName("X", media.url)
+                                            ketchDownload(media.url, "${i}_${fileName}")
+                                        } else if (medias[i] is RyzendesuXResponse.Media.Image){
+                                            val media = medias[i] as RyzendesuXResponse.Media.Image
+                                            val fileName = createFileName("X", media.url)
+                                            ketchDownload(media.url, "${i}_${fileName}")
+                                        }
+                                    }
+                                } else {
+                                    ToastUtil.showToast(
+                                        this@XDownloadActivity,
+                                        getString(R.string.invalid_url)
+                                    )
                                 }
                             }
-                        } else {
-                            ToastUtil.showToast(
-                                this@XDownloadActivity,
-                                getString(R.string.invalid_url)
-                            )
+                        }
+
+                        is LoadState.Error -> {
+                            showLoading(binding.progressBar, false)
+                            showErrorMesssage(binding.tvError, true, state.message)
                         }
                     }
                 }
 
-                is LoadState.Error -> {
-                    showLoading(binding.progressBar, false)
-                    showErrorMesssage(binding.tvError, true, state.message)
+            }
+            1 -> {
+                viewModel.downloadXFromBackup(url).observe(this) { state ->
+                    when (state) {
+                        is LoadState.Loading -> {
+                            showLoading(binding.progressBar,true)
+                        }
+
+                        is LoadState.Success -> {
+                            showLoading(binding.progressBar, false)
+                            lifecycleScope.launch {
+                                val data = state.data
+                                if (data.media != null) {
+                                    val medias = data.media!!
+                                    for (i in medias.indices) {
+                                        Log.d("DL LOOP", "downloadVideoLoop: $i")
+                                        if(medias[i] is RyzendesuXResponse.Media.MultiType) {
+                                            val media = medias[i] as RyzendesuXResponse.Media.MultiType
+                                            val fileName = createFileName("X", media.url)
+                                            ketchDownload(media.url, "${i}_${fileName}")
+                                        } else if (medias[i] is RyzendesuXResponse.Media.Image){
+                                            val media = medias[i] as RyzendesuXResponse.Media.Image
+                                            val fileName = createFileName("X", media.url)
+                                            ketchDownload(media.url, "${i}_${fileName}")
+                                        }
+                                    }
+                                } else {
+                                    ToastUtil.showToast(
+                                        this@XDownloadActivity,
+                                        getString(R.string.invalid_url)
+                                    )
+                                }
+                            }
+                        }
+
+                        is LoadState.Error -> {
+                            showLoading(binding.progressBar, false)
+                            showErrorMesssage(binding.tvError, true, state.message)
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -125,8 +176,16 @@ class XDownloadActivity : BaseActivity(), OnClickListener {
                 hideKeyboard()
                 val postUrl = binding.etUrl.text.toString()
                 if(postUrl.isNotBlank())
-                    downloadPost(postUrl)
+                    downloadAllPost(postUrl)
             }
         }
+    }
+    override fun onCheckedChanged(rg: RadioGroup?, id: Int) {
+        val selectedServer = when(id) {
+            binding.radioMainServer.id -> 0
+            binding.radioBackupServer.id -> 1
+            else -> 0
+        }
+        viewModel.choosenServer = selectedServer
     }
 }

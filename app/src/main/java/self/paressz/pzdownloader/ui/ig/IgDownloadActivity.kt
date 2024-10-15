@@ -7,6 +7,8 @@ import android.os.Environment
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.RadioGroup
+import android.widget.RadioGroup.OnCheckedChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
@@ -27,7 +29,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class IgDownloadActivity : BaseActivity(), OnClickListener {
+class IgDownloadActivity : BaseActivity(), OnClickListener, OnCheckedChangeListener {
     private lateinit var binding: ActivityIgDownloadBinding
     private lateinit var ketch: Ketch
     private val viewModel: IgDownloadViewModel by viewModels()
@@ -45,34 +47,70 @@ class IgDownloadActivity : BaseActivity(), OnClickListener {
         getSharedLink()
         binding.btnDownload.setOnClickListener(this)
         binding.btnPaste.setOnClickListener(this)
+        binding.radioGroup.setOnCheckedChangeListener(this)
+        binding.radioMainServer.isChecked = true
     }
 
     private fun downloadPost(url: String) {
-        viewModel.getDownloadUrl(url).observe(this@IgDownloadActivity) { state ->
-            when (state) {
-                is LoadState.Loading -> {
-                    showLoading(binding.progressBar2, true)
-                }
+        when(viewModel.choosenServer) {
+            0 -> {
+                viewModel.getDownloadUrl(url).observe(this@IgDownloadActivity) { state ->
+                    when (state) {
+                        is LoadState.Loading -> {
+                            showLoading(binding.progressBar2, true)
+                        }
 
-                is LoadState.Success -> {
-                    lifecycleScope.launch {
-                        if (state.data.data != null) {
-                            val data = state.data.data!!.get(0)
-                            val downloadUrl = data.url
-                            ketchDownload(downloadUrl, createFileName("IG", downloadUrl))
-                        } else {
-                            ToastUtil.showToast(
-                                this@IgDownloadActivity,
-                                getString(R.string.invalid_url)
-                            )
+                        is LoadState.Success -> {
+                            lifecycleScope.launch {
+                                if (state.data.data != null) {
+                                    val data = state.data.data!!.get(0)
+                                    val downloadUrl = data.url
+                                    ketchDownload(downloadUrl, createFileName("IG", downloadUrl))
+                                } else {
+                                    ToastUtil.showToast(
+                                        this@IgDownloadActivity,
+                                        getString(R.string.invalid_url)
+                                    )
+                                    showLoading(binding.progressBar2, false)
+                                }
+                            }
+                        }
+
+                        is LoadState.Error -> {
                             showLoading(binding.progressBar2, false)
+                            showErrorMesssage(binding.tvError, true, state.message)
                         }
                     }
                 }
+            }
+            1 -> {
+                viewModel.getDownloadUrlFromBackup(url).observe(this@IgDownloadActivity) { state ->
+                    when (state) {
+                        is LoadState.Loading -> {
+                            showLoading(binding.progressBar2, true)
+                        }
 
-                is LoadState.Error -> {
-                    showLoading(binding.progressBar2, false)
-                    showErrorMesssage(binding.tvError, true, state.message)
+                        is LoadState.Success -> {
+                            lifecycleScope.launch {
+                                if (state.data.data != null) {
+                                    val data = state.data.data!!.get(0)
+                                    val downloadUrl = data.url
+                                    ketchDownload(downloadUrl, createFileName("IG", downloadUrl))
+                                } else {
+                                    ToastUtil.showToast(
+                                        this@IgDownloadActivity,
+                                        getString(R.string.invalid_url)
+                                    )
+                                    showLoading(binding.progressBar2, false)
+                                }
+                            }
+                        }
+
+                        is LoadState.Error -> {
+                            showLoading(binding.progressBar2, false)
+                            showErrorMesssage(binding.tvError, true, state.message)
+                        }
+                    }
                 }
             }
         }
@@ -122,5 +160,13 @@ class IgDownloadActivity : BaseActivity(), OnClickListener {
                     downloadPost(postUrl)
             }
         }
+    }
+    override fun onCheckedChanged(rg: RadioGroup?, id: Int) {
+        val selectedServer = when(id) {
+            binding.radioMainServer.id -> 0
+            binding.radioBackupServer.id -> 1
+            else -> 0
+        }
+        viewModel.choosenServer = selectedServer
     }
 }

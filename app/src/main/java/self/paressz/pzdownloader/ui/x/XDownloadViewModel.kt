@@ -12,11 +12,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class XDownloadViewModel
-@Inject constructor(private val ryzendesuDownloadRepository: RyzendesuDownloadRepository) : ViewModel() {
+@Inject
+constructor(private val ryzendesuDownloadRepository: RyzendesuDownloadRepository) : ViewModel() {
+
+    var choosenServer = 0
+
     fun downloadX(url: String): LiveData<LoadState<RyzendesuXResponse>> {
         lateinit var data: LiveData<LoadState<RyzendesuXResponse>>
         viewModelScope.launch {
             data = ryzendesuDownloadRepository.downloadXVideo(url)
+        }
+        return data
+    }
+    fun downloadXFromBackup(url: String): LiveData<LoadState<RyzendesuXResponse>> {
+        lateinit var data: LiveData<LoadState<RyzendesuXResponse>>
+        viewModelScope.launch {
+            data = ryzendesuDownloadRepository.downloadXVideoFromBackup(url)
         }
         return data
     }

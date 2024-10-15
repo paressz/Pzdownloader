@@ -7,6 +7,9 @@ import android.os.Environment
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.CompoundButton
+import android.widget.CompoundButton.OnCheckedChangeListener
+import android.widget.RadioGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
@@ -19,6 +22,8 @@ import self.paressz.core.repository.LoadState
 import self.paressz.pzdownloader.R
 import self.paressz.pzdownloader.databinding.ActivityFbDownloadBinding
 import self.paressz.pzdownloader.ui.BaseActivity
+import self.paressz.pzdownloader.util.BACKUP_SERVER
+import self.paressz.pzdownloader.util.MAIN_SERVER
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.createFileName
 import self.paressz.pzdownloader.util.getKetch
@@ -27,7 +32,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class FbDownloadActivity : BaseActivity(), OnClickListener {
+class FbDownloadActivity : BaseActivity(), OnClickListener, RadioGroup.OnCheckedChangeListener {
     lateinit var binding: ActivityFbDownloadBinding
     lateinit var ketch: Ketch
     val viewModel : FbDownloadViewModel by viewModels()
@@ -45,31 +50,65 @@ class FbDownloadActivity : BaseActivity(), OnClickListener {
         getSharedLinkIntent()
         binding.btnDownload.setOnClickListener(this)
         binding.btnPaste.setOnClickListener(this)
+        binding.radioGroup.setOnCheckedChangeListener(this)
+        binding.radioMainServer.isChecked = true
     }
     fun downloadPost(postUrl: String) {
-        viewModel.getDownloadUrl(postUrl).observe(this) { state ->
-            when (state) {
-                is LoadState.Loading -> {
-                    showLoading(binding.progressBar2, true)
-                }
-
-                is LoadState.Success -> {
-                    val data = state.data.data
-                    if (data != null) {
-                        lifecycleScope.launch {
-                            val downloadUrl = data.get(0).url
-                            val fileName = createFileName("FB", downloadUrl)
-                            ketchDownload(downloadUrl, fileName)
+        when(viewModel.choosenServer) {
+            0 -> {
+                viewModel.getDownloadUrl(postUrl).observe(this) { state ->
+                    when (state) {
+                        is LoadState.Loading -> {
+                            showLoading(binding.progressBar2, true)
                         }
-                    } else {
-                        ToastUtil.showToast(this, getString(R.string.invalid_url))
-                        showLoading(binding.progressBar2, false)
+
+                        is LoadState.Success -> {
+                            val data = state.data.data
+                            if (data != null) {
+                                lifecycleScope.launch {
+                                    val downloadUrl = data.get(0).url
+                                    val fileName = createFileName("FB", downloadUrl)
+                                    ketchDownload(downloadUrl, fileName)
+                                }
+                            } else {
+                                ToastUtil.showToast(this, getString(R.string.invalid_url))
+                                showLoading(binding.progressBar2, false)
+                            }
+                        }
+                        is LoadState.Error -> {
+                            showLoading(binding.progressBar2, false)
+                            showErrorMesssage(binding.tvError ,true, state.message)
+
+                        }
                     }
                 }
-                is LoadState.Error -> {
-                    showLoading(binding.progressBar2, false)
-                    showErrorMesssage(binding.tvError ,true, state.message)
+            }
+            1 -> {
+                viewModel.getDownloadUrlFromBackup(postUrl).observe(this) { state ->
+                    when (state) {
+                        is LoadState.Loading -> {
+                            showLoading(binding.progressBar2, true)
+                        }
 
+                        is LoadState.Success -> {
+                            val data = state.data.data
+                            if (data != null) {
+                                lifecycleScope.launch {
+                                    val downloadUrl = data.get(0).url
+                                    val fileName = createFileName("FB", downloadUrl)
+                                    ketchDownload(downloadUrl, fileName)
+                                }
+                            } else {
+                                ToastUtil.showToast(this, getString(R.string.invalid_url))
+                                showLoading(binding.progressBar2, false)
+                            }
+                        }
+                        is LoadState.Error -> {
+                            showLoading(binding.progressBar2, false)
+                            showErrorMesssage(binding.tvError ,true, state.message)
+
+                        }
+                    }
                 }
             }
         }
@@ -116,5 +155,14 @@ class FbDownloadActivity : BaseActivity(), OnClickListener {
                     downloadPost(postUrl)
             }
         }
+    }
+
+    override fun onCheckedChanged(rg: RadioGroup?, id: Int) {
+        val selectedServer = when(id) {
+            binding.radioMainServer.id -> 0
+            binding.radioBackupServer.id -> 1
+            else -> 0
+        }
+        viewModel.choosenServer = selectedServer
     }
 }

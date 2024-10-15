@@ -7,6 +7,8 @@ import android.os.Environment
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.RadioGroup
+import android.widget.RadioGroup.OnCheckedChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +31,7 @@ import self.paressz.pzdownloader.util.showErrorMesssage
 import self.paressz.pzdownloader.util.showLoading
 
 @AndroidEntryPoint
-class TiktokDownloadActivity : BaseActivity(), OnClickListener {
+class TiktokDownloadActivity : BaseActivity(), OnClickListener, OnCheckedChangeListener {
     private lateinit var binding: ActivityTiktokDownloadBinding
     private lateinit var ketch: Ketch
     private val viewModel: TiktokDownloadViewModel by viewModels()
@@ -47,34 +49,69 @@ class TiktokDownloadActivity : BaseActivity(), OnClickListener {
         getSharedLink()
         binding.btnDownload.setOnClickListener(this)
         binding.btnPaste.setOnClickListener(this)
+        binding.radioGroup.setOnCheckedChangeListener(this)
+        binding.radioMainServer.isChecked = true
     }
     private fun downloadPost(url : String) {
-        viewModel.downloadVideo(url).observe(this) { state ->
-            when(state) {
-                is LoadState.Error -> {
-                    showLoading(binding.progressBar2, false)
-                    showErrorMesssage(binding.tvError, true, state.message)
-                }
-                LoadState.Loading -> {
-                    showLoading(binding.progressBar2, true)
-                }
-                is LoadState.Success -> {
-                    lifecycleScope.launch {
-                        val responseData = state.data.data
-                        if (responseData != null) {
-                            val postUrl = responseData.watermarkedVideoUrl!!
-                            ketchDownload(postUrl, createFileName("Tiktok", postUrl))
-                        } else {
-                            ToastUtil.showToast(
-                                this@TiktokDownloadActivity,
-                                getString(R.string.invalid_url)
-                            )
+        when(viewModel.choosenServer) {
+            0 -> {
+                viewModel.downloadVideo(url).observe(this) { state ->
+                    when(state) {
+                        is LoadState.Error -> {
                             showLoading(binding.progressBar2, false)
+                            showErrorMesssage(binding.tvError, true, state.message)
+                        }
+                        LoadState.Loading -> {
+                            showLoading(binding.progressBar2, true)
+                        }
+                        is LoadState.Success -> {
+                            lifecycleScope.launch {
+                                val responseData = state.data.data
+                                if (responseData != null) {
+                                    val postUrl = responseData.watermarkedVideoUrl!!
+                                    ketchDownload(postUrl, createFileName("Tiktok", postUrl))
+                                } else {
+                                    ToastUtil.showToast(
+                                        this@TiktokDownloadActivity,
+                                        getString(R.string.invalid_url)
+                                    )
+                                    showLoading(binding.progressBar2, false)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            1 -> {
+                viewModel.downloadVideoFromBackup(url).observe(this) { state ->
+                    when(state) {
+                        is LoadState.Error -> {
+                            showLoading(binding.progressBar2, false)
+                            showErrorMesssage(binding.tvError, true, state.message)
+                        }
+                        LoadState.Loading -> {
+                            showLoading(binding.progressBar2, true)
+                        }
+                        is LoadState.Success -> {
+                            lifecycleScope.launch {
+                                val responseData = state.data.data
+                                if (responseData != null) {
+                                    val postUrl = responseData.watermarkedVideoUrl!!
+                                    ketchDownload(postUrl, createFileName("Tiktok", postUrl))
+                                } else {
+                                    ToastUtil.showToast(
+                                        this@TiktokDownloadActivity,
+                                        getString(R.string.invalid_url)
+                                    )
+                                    showLoading(binding.progressBar2, false)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
     }
     private suspend fun ketchDownload(downloadUrl: String, fileName: String) {
         ketch.download(
@@ -119,5 +156,12 @@ class TiktokDownloadActivity : BaseActivity(), OnClickListener {
                     downloadPost(postUrl)
             }
         }
+    }    override fun onCheckedChanged(rg: RadioGroup?, id: Int) {
+        val selectedServer = when(id) {
+            binding.radioMainServer.id -> 0
+            binding.radioBackupServer.id -> 1
+            else -> 0
+        }
+        viewModel.choosenServer = selectedServer
     }
 }

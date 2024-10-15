@@ -11,9 +11,9 @@ object RyzendesuApiClient {
     private val retrofit = Retrofit.Builder().baseUrl(BASE_URL).client(OkHttpLogClient.getClient())
         .addConverterFactory(GsonConverterFactory.create()).build()
 
-    fun getXService() = retrofit.create(RyzendesuXService::class.java)
-    fun getInstagramService() = retrofit.create(RyzendesuInstagramService::class.java)
-    fun getTiktokService() = retrofit.create(RyzendesuTiktokService::class.java)
-    fun getFacebookService() = retrofit.create(RyzendesuFacebookService::class.java)
+    @RyzendesuMainServer fun getXService() = retrofit.create(RyzendesuXService::class.java)
+    @RyzendesuMainServer fun getInstagramService() = retrofit.create(RyzendesuInstagramService::class.java)
+    @RyzendesuMainServer fun getTiktokService() = retrofit.create(RyzendesuTiktokService::class.java)
+    @RyzendesuMainServer fun getFacebookService() = retrofit.create(RyzendesuFacebookService::class.java)
 }
 

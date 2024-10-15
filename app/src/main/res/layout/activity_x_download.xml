@@ -7,41 +7,60 @@
     android:layout_height="match_parent"
     tools:context=".ui.x.XDownloadActivity">
 
-    <TextView
-        android:id="@+id/tvError"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/download_text"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
-
-    <Button
-        android:id="@+id/btnDownload"
-        android:text="@string/download_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUrl"
-        style="@style/button_download"
-        />
-
     <EditText
         android:id="@+id/etUrl"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
+        style="@style/input_url_style"
         android:hint="@string/url_hint_x"
-        android:imeOptions="actionDone"
-        android:inputType="textUri"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnPaste"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnPaste"
+        style="@style/button_paste"
+        app:icon="@drawable/copy_svgrepo_com"
+        app:iconGravity="textEnd"
+        app:iconPadding="0dp"
+        app:iconSize="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etUrl" />
+
+    <TextView
+        android:id="@+id/tvDownloadServer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/download_server_text"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etUrl" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        style="@style/radio_group_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDownloadServer">
+
+        <RadioButton
+            android:id="@+id/radioMainServer"
+            style="@style/radio_button_style"
+            android:text="@string/server_1_text" />
+
+        <RadioButton
+            android:id="@+id/radioBackupServer"
+            style="@style/radio_button_style"
+            android:text="@string/server_2_text" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnDownload"
+        style="@style/button_download"
+        android:text="@string/download_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -54,14 +73,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDownload" />
 
-    <Button
-        android:id="@+id/btnPaste"
-        style="@style/button_paste"
-        app:icon="@drawable/copy_svgrepo_com"
-        app:iconGravity="textEnd"
-        app:iconPadding="0dp"
-        app:iconSize="28dp"
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/download_text"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etUrl" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
