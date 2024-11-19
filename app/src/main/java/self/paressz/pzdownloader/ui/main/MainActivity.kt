@@ -24,6 +24,7 @@ import self.paressz.pzdownloader.databinding.ActivityMainBinding
 import self.paressz.pzdownloader.model.MainItem
 import self.paressz.pzdownloader.model.MainType
 import self.paressz.pzdownloader.ui.BaseActivity
+import self.paressz.pzdownloader.ui.setting.SettingActivity
 import self.paressz.pzdownloader.updater.UpdateManager
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.newVersionAvailable
@@ -47,7 +48,10 @@ class MainActivity : BaseActivity() {
         setupRv()
         requestPermission()
         if(isConnectedToInternet()) checkForUpdate()
-        else ToastUtil.showToast(this, "NEED INTERNET")
+        else ToastUtil.showToast(this, "APP NEED INTERNET CONNECTION")
+        binding.btnSetting.setOnClickListener {
+            startActivity(Intent(this, SettingActivity::class.java))
+        }
     }
 
     fun setupRv() {

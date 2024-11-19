@@ -25,12 +25,17 @@
         android:theme="@style/Theme.Pzdownloader"
         tools:targetApi="34">
         <activity
+            android:name=".ui.setting.SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.yt.YoutubeDownloadActivity"
             android:exported="true">
             <intent-filter android:label="yt">
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
