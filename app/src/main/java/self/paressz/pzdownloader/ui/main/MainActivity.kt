@@ -56,6 +56,7 @@ class MainActivity : BaseActivity() {
             MainItem(R.drawable.logo_instagram_outline_svgrepo_com, "Instagram",  getString(R.string.download_instagram), MainType.INSTAGRAM),
             MainItem(R.drawable.logo_tiktok_svgrepo_com, "TikTok",  getString(R.string.download_tiktok), MainType.TIKTOK),
             MainItem(R.drawable.logo_x, "X",  getString(R.string.download_x), MainType.X),
+            MainItem(R.drawable.logo_youtube_svgrepo_com, "Youtube", getString(R.string.download_youtube), MainType.YOUTUBE),
         )
         val rv = binding.mainRv
         rv.layoutManager = GridLayoutManager(this, 2)

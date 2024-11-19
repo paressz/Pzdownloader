@@ -4,5 +4,6 @@ enum class MainType {
     FACEBOOK,
     INSTAGRAM,
     TIKTOK,
-    X
+    X,
+    YOUTUBE
 }

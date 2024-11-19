@@ -13,6 +13,7 @@ import self.paressz.pzdownloader.ui.fb.FbDownloadActivity
 import self.paressz.pzdownloader.ui.ig.IgDownloadActivity
 import self.paressz.pzdownloader.ui.tiktok.TiktokDownloadActivity
 import self.paressz.pzdownloader.ui.x.XDownloadActivity
+import self.paressz.pzdownloader.ui.yt.YoutubeDownloadActivity
 import self.paressz.pzdownloader.util.ToastUtil
 
 class MainAdapter(val items: List<MainItem>, val context: Context) : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
@@ -43,6 +44,10 @@ class MainAdapter(val items: List<MainItem>, val context: Context) : RecyclerVie
                     }
                     MainType.TIKTOK  -> {
                         Intent(context, TiktokDownloadActivity::class.java).also { context.startActivity(it) }
+                    }
+
+                    MainType.YOUTUBE -> {
+                        Intent(context, YoutubeDownloadActivity::class.java).also { context.startActivity(it) }
                     }
                 }
             }

@@ -14,4 +14,5 @@ object RyzendesuBackupApiClient {
     @RyzendesuBackupServer fun getInstagramService() = retrofit.create(RyzendesuInstagramService::class.java)
     @RyzendesuBackupServer fun getTiktokService() = retrofit.create(RyzendesuTiktokService::class.java)
     @RyzendesuBackupServer fun getFacebookService() = retrofit.create(RyzendesuFacebookService::class.java)
+    @RyzendesuBackupServer fun getYoutubeService() = retrofit.create(RyzendesuYoutubeService::class.java)
 }

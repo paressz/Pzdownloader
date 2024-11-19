@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.yt.YoutubeDownloadActivity">
+
+    <EditText
+        android:id="@+id/etUrl"
+        style="@style/input_url_style"
+        android:hint="@string/url_hint_yt"
+        app:layout_constraintEnd_toStartOf="@+id/btnPaste"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDownloadServer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/etUrl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
+        android:textAlignment="center"
+        android:text="@string/download_server_text"
+        />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDownloadServer"
+        style="@style/radio_group_style">
+
+        <RadioButton
+            android:id="@+id/radioMainServer"
+            android:text="@string/server_1_text"
+            style="@style/radio_button_style" />
+        <RadioButton
+            android:id="@+id/radioBackupServer"
+            style="@style/radio_button_style"
+            android:text="@string/server_2_text"
+            />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnDownload"
+        style="@style/button_download"
+        android:text="@string/download_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/qualitySpinner" />
+
+    <TextView
+        android:id="@+id/tvVideoQuality"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:text="Video Quality"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/qualitySpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/qualitySpinner" />
+
+    <Spinner
+        android:id="@+id/qualitySpinner"
+        android:layout_width="120dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDownload" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/download_text"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+    <Button
+        android:id="@+id/btnPaste"
+        style="@style/button_paste"
+        app:icon="@drawable/copy_svgrepo_com"
+        app:iconGravity="textEnd"
+        app:iconPadding="0dp"
+        app:iconSize="28dp"
+        app:iconTint="?attr/colorOnTertiaryContainer"
+        app:layout_constraintBottom_toBottomOf="@+id/etUrl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etUrl"
+        android:contentDescription="paste"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

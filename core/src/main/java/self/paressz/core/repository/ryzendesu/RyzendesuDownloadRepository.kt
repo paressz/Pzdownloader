@@ -11,12 +11,14 @@ import self.paressz.core.model.ryzendesu.RyzendesuFbResponse
 import self.paressz.core.model.ryzendesu.RyzendesuIgResponse
 import self.paressz.core.model.ryzendesu.RyzendesuTiktokResponse
 import self.paressz.core.model.ryzendesu.RyzendesuXResponse
+import self.paressz.core.model.ryzendesu.RyzendesuYtResponse
 import self.paressz.core.network.ryzendesu.RyzendesuBackupServer
 import self.paressz.core.network.ryzendesu.RyzendesuMainServer
 import self.paressz.core.network.ryzendesu.RyzendesuFacebookService
 import self.paressz.core.network.ryzendesu.RyzendesuInstagramService
 import self.paressz.core.network.ryzendesu.RyzendesuTiktokService
 import self.paressz.core.network.ryzendesu.RyzendesuXService
+import self.paressz.core.network.ryzendesu.RyzendesuYoutubeService
 import self.paressz.core.repository.LoadState
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,11 +30,14 @@ class RyzendesuDownloadRepository
     @RyzendesuMainServer private val ryzendesuInstagramService: RyzendesuInstagramService,
     @RyzendesuMainServer private val ryzendesuFacebookService: RyzendesuFacebookService,
     @RyzendesuMainServer private val ryzendesuTiktokService: RyzendesuTiktokService,
+    @RyzendesuMainServer private val ryzendesuYoutubeService: RyzendesuYoutubeService,
     @RyzendesuBackupServer private val ryzendesuBackupXService: RyzendesuXService,
     @RyzendesuBackupServer private val ryzendesuBackupInstagramService: RyzendesuInstagramService,
     @RyzendesuBackupServer private val ryzendesuBackupFacebookService: RyzendesuFacebookService,
     @RyzendesuBackupServer private val ryzendesuBackupTiktokService: RyzendesuTiktokService,
-)  {
+    @RyzendesuBackupServer private val ryzendesuBackupYoutubeService: RyzendesuYoutubeService,
+
+    )  {
     val xState = MutableLiveData<LoadState<RyzendesuXResponse>>()
     fun downloadXVideo(url: String) : LiveData<LoadState<RyzendesuXResponse>> {
         xState.value = LoadState.Loading
@@ -145,6 +150,26 @@ class RyzendesuDownloadRepository
         return tiktokState
     }
 
+    val ytState = MutableLiveData<LoadState<RyzendesuYtResponse>>()
+    fun downloadYoutubeVideo(url: String, videoRes : String) : LiveData<LoadState<RyzendesuYtResponse>> {
+        ytState.value = LoadState.Loading
+        ryzendesuYoutubeService.downloadYoutubeVideo(url, videoRes).enqueue(object : Callback<RyzendesuYtResponse> {
+            override fun onResponse(
+                p0: Call<RyzendesuYtResponse>,
+                response: Response<RyzendesuYtResponse>
+            ) {
+                if(response.code() == 500) LoadState.Error("Invalid URL")
+                val responseBody = response.body() as RyzendesuYtResponse
+                ytState.value = LoadState.Success(responseBody)
+            }
+
+            override fun onFailure(p0: Call<RyzendesuYtResponse>, t: Throwable) {
+                ytState.value = LoadState.Error(t.message.toString())
+            }
+        })
+        return ytState
+    }
+
     val xStateBackup = MutableLiveData<LoadState<RyzendesuXResponse>>()
     fun downloadXVideoFromBackup(url: String) : LiveData<LoadState<RyzendesuXResponse>> {
         xStateBackup.value = LoadState.Loading
@@ -255,5 +280,24 @@ class RyzendesuDownloadRepository
             }
         })
         return tiktokStateBackup
+    }
+    val ytStateBackup = MutableLiveData<LoadState<RyzendesuYtResponse>>()
+    fun downloadYoutubeVideoFromBackup(url: String, videoRes : String) : LiveData<LoadState<RyzendesuYtResponse>> {
+        ytStateBackup.value = LoadState.Loading
+        ryzendesuYoutubeService.downloadYoutubeVideo(url, videoRes).enqueue(object : Callback<RyzendesuYtResponse> {
+            override fun onResponse(
+                p0: Call<RyzendesuYtResponse>,
+                response: Response<RyzendesuYtResponse>
+            ) {
+                if(response.code() == 500) LoadState.Error("Invalid URL")
+                val responseBody = response.body() as RyzendesuYtResponse
+                ytStateBackup.value = LoadState.Success(responseBody)
+            }
+
+            override fun onFailure(p0: Call<RyzendesuYtResponse>, t: Throwable) {
+                ytStateBackup.value = LoadState.Error(t.message.toString())
+            }
+        })
+        return ytStateBackup
     }
 }

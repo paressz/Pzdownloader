@@ -14,6 +14,7 @@ import self.paressz.core.network.ryzendesu.RyzendesuApiClient
 import self.paressz.core.network.ryzendesu.RyzendesuBackupApiClient
 import self.paressz.core.network.ryzendesu.RyzendesuTiktokService
 import self.paressz.core.network.ryzendesu.RyzendesuXService
+import self.paressz.core.network.ryzendesu.RyzendesuYoutubeService
 import self.paressz.core.repository.github.GithubRepository
 import self.paressz.core.repository.ryzendesu.RyzendesuDownloadRepository
 
@@ -33,6 +34,9 @@ object NetworkModule {
     @RyzendesuMainServer
     fun provideRyzendesuTiktokService() = RyzendesuApiClient.getTiktokService()
     @Provides
+    @RyzendesuMainServer
+    fun provideRyzendesuYoutubeService() = RyzendesuApiClient.getYoutubeService()
+    @Provides
     @RyzendesuBackupServer
     fun provideRyzendesuBackupXService() = RyzendesuBackupApiClient.getXService()
     @Provides
@@ -45,6 +49,9 @@ object NetworkModule {
     @RyzendesuBackupServer
     fun provideRyzendesuBackupTiktokService() = RyzendesuBackupApiClient.getTiktokService()
     @Provides
+    @RyzendesuBackupServer
+    fun provideRyzendesuBackupYoutubeService() = RyzendesuApiClient.getYoutubeService()
+    @Provides
     fun provideGithubService() = GithubApiClient.getGithubService()
 
     @Provides
@@ -53,13 +60,23 @@ object NetworkModule {
         @RyzendesuMainServer ryzendesuInstagramService: RyzendesuInstagramService,
         @RyzendesuMainServer ryzendesuFacebookService: RyzendesuFacebookService,
         @RyzendesuMainServer ryzendesuTiktokService: RyzendesuTiktokService,
+        @RyzendesuMainServer ryzendesuYoutubeService: RyzendesuYoutubeService,
         @RyzendesuBackupServer ryzendesuBackupXService: RyzendesuXService,
         @RyzendesuBackupServer ryzendesuBackupInstagramService: RyzendesuInstagramService,
         @RyzendesuBackupServer ryzendesuBackupFacebookService: RyzendesuFacebookService,
-        @RyzendesuBackupServer ryzendesuBackupTiktokService: RyzendesuTiktokService
+        @RyzendesuBackupServer ryzendesuBackupTiktokService: RyzendesuTiktokService,
+        @RyzendesuBackupServer ryzendesuBackupYoutubeService: RyzendesuYoutubeService,
     ) = RyzendesuDownloadRepository(
-        ryzendesuXService, ryzendesuInstagramService, ryzendesuFacebookService, ryzendesuTiktokService,
-        ryzendesuBackupXService, ryzendesuBackupInstagramService, ryzendesuBackupFacebookService, ryzendesuBackupTiktokService,
+        ryzendesuXService = ryzendesuXService,
+        ryzendesuInstagramService = ryzendesuInstagramService,
+        ryzendesuFacebookService = ryzendesuFacebookService,
+        ryzendesuTiktokService = ryzendesuTiktokService,
+        ryzendesuYoutubeService = ryzendesuYoutubeService,
+        ryzendesuBackupXService = ryzendesuBackupXService,
+        ryzendesuBackupInstagramService = ryzendesuBackupInstagramService,
+        ryzendesuBackupFacebookService = ryzendesuBackupFacebookService,
+        ryzendesuBackupTiktokService = ryzendesuBackupTiktokService,
+        ryzendesuBackupYoutubeService = ryzendesuBackupYoutubeService
     )
 
     @Provides
