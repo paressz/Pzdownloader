@@ -25,7 +25,7 @@ import self.paressz.pzdownloader.model.MainItem
 import self.paressz.pzdownloader.model.MainType
 import self.paressz.pzdownloader.ui.BaseActivity
 import self.paressz.pzdownloader.ui.setting.SettingActivity
-import self.paressz.pzdownloader.updater.UpdateManager
+import self.paressz.pzdownloader.prefs.UpdateManager
 import self.paressz.pzdownloader.util.ToastUtil
 import self.paressz.pzdownloader.util.newVersionAvailable
 import java.util.concurrent.TimeUnit

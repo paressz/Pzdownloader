@@ -4,11 +4,14 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import self.paressz.pzdownloader.R
+import self.paressz.pzdownloader.prefs.DownloadLocationPreference
 
 abstract class BaseActivity : AppCompatActivity() {
+    lateinit var downloadPref : DownloadLocationPreference
     override fun onCreate(savedInstanceState: Bundle?) {
         useMaterialDynamicThemeForSAndAbove()
         super.onCreate(savedInstanceState)
+        downloadPref = DownloadLocationPreference(this)
     }
 
     private fun useMaterialDynamicThemeForSAndAbove() {

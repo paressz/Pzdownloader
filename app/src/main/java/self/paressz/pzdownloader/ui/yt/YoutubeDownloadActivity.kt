@@ -181,7 +181,7 @@ class YoutubeDownloadActivity : BaseActivity(), View.OnClickListener, RadioGroup
     private fun getSharedLink() {
         if (intent != null && intent.action == Intent.ACTION_SEND) {
             intent.getStringExtra(Intent.EXTRA_TEXT).let { sharedLink ->
-                if (sharedLink != null && sharedLink.contains("x.com"))
+                if (sharedLink != null && (sharedLink.contains("youtube.com") || sharedLink.contains("youtu.be")))
                     binding.etUrl.setText(sharedLink)
                 else
                     ToastUtil.showToast(this, getString(R.string.invalid_url_x))

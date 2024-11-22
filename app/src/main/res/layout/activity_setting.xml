@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.setting.SettingActivity">
+    tools:context=".ui.setting.SettingActivity"
+    >
 
     <Toolbar
         android:id="@+id/toolbar"
@@ -14,16 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:navigationIcon="?attr/homeAsUpIndicator"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Setting"
-            android:textSize="21sp"
-            />
-
-    </Toolbar>
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/settingRv"

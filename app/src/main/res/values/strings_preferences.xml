@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_download_location">pref_download_location</string>
+    <string name="pref_download_location_key">pref_download_location_key</string>
+    <string name="pref_update">pref_update</string>
+    <string name="pref_update_key">pref_update_key</string>
+</resources>
